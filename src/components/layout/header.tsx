@@ -1,13 +1,13 @@
 'use client';
 
 import Link from "next/link"
-import { Heart, Menu, Search, User, LogOut } from "lucide-react"
+import { Heart, User, LogOut, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { ChannelSwitcher } from "@/components/channel-switcher"
 import { useAuth } from "@/components/providers/auth-provider"
 import { CartButton } from "@/components/cart/cart-button"
 import { CartDrawer } from "@/components/cart/cart-drawer"
+import { SearchCommand } from "@/components/search/search-command"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,21 +16,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useState } from "react"
 
 export function Header() {
   const { user, logout } = useAuth()
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
           <div className="flex gap-6 md:gap-10">
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">打开菜单</span>
-            </Button>
-            <Link href="/" className="hidden items-center space-x-2 md:flex">
-              <span className="hidden font-bold sm:inline-block">
+            <Link href="/" className="items-center space-x-2 flex">
+              <span className="font-bold">
                 Saleor商城
               </span>
             </Link>
@@ -56,10 +54,22 @@ export function Header() {
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
-            <ChannelSwitcher />
+            <div className="hidden lg:flex">
+              <Button
+                variant="outline"
+                className="relative h-10 w-full justify-start text-sm text-muted-foreground sm:w-64 sm:pr-12"
+                onClick={() => setIsSearchOpen(true)}
+              >
+                <Search className="mr-2 h-4 w-4" />
+                <span>搜索商品...</span>
+                <kbd className="pointer-events-none absolute right-2 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 sm:flex">
+                  <span className="text-xs">⌘</span>K
+                </kbd>
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
               <nav className="flex items-center space-x-2">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(true)}>
                   <Search className="h-5 w-5" />
                   <span className="sr-only">搜索</span>
                 </Button>
@@ -117,6 +127,7 @@ export function Header() {
         </div>
       </header>
       <CartDrawer />
+      <SearchCommand open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </>
   )
 } 

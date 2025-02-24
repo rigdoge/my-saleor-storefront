@@ -1,3 +1,5 @@
+import { ChannelSwitcher } from "@/components/channel-switcher"
+
 export function Footer() {
   return (
     <footer className="border-t">
@@ -24,9 +26,12 @@ export function Footer() {
             </a>
           </div>
         </nav>
-        <p className="mt-10 text-center text-xs text-foreground/60">
-          &copy; {new Date().getFullYear()} Saleor商城. 保留所有权利.
-        </p>
+        <div className="mt-10 flex flex-col items-center justify-center gap-4">
+          <ChannelSwitcher />
+          <p className="text-center text-xs text-foreground/60">
+            &copy; {new Date().getFullYear()} Saleor商城. 保留所有权利.
+          </p>
+        </div>
       </div>
     </footer>
   )
