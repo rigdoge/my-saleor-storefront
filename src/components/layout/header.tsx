@@ -1,12 +1,23 @@
 'use client';
 
 import Link from "next/link"
-import { ShoppingBag, Heart, Menu, Search, User } from "lucide-react"
+import { ShoppingBag, Heart, Menu, Search, User, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ChannelSwitcher } from "@/components/channel-switcher"
+import { useAuth } from "@/components/providers/auth-provider"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Header() {
+  const { user, logout } = useAuth()
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
@@ -56,10 +67,46 @@ export function Header() {
               <ShoppingBag className="h-5 w-5" />
               <span className="sr-only">购物车</span>
             </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-              <span className="sr-only">账户</span>
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                    <span className="sr-only">用户菜单</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    {user.firstName || user.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/account">个人中心</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/account/orders">我的订单</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/account/favorites">我的收藏</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-red-600 dark:text-red-400"
+                    onClick={() => logout()}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>退出登录</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/login">
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">登录</span>
+                </Link>
+              </Button>
+            )}
             <ThemeToggle />
           </nav>
         </div>

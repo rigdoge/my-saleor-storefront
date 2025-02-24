@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Providers } from "@/components/providers"
 import { ChannelProvider } from "@/components/providers/channel-provider"
+import { AuthProvider } from "@/components/providers/auth-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -54,13 +55,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <ChannelProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
-            </ChannelProvider>
+            <AuthProvider>
+              <ChannelProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
+              </ChannelProvider>
+            </AuthProvider>
           </Providers>
         </ThemeProvider>
       </body>

@@ -1,13 +1,12 @@
 import { gql } from 'graphql-request'
 
 export const CHANNELS_QUERY = gql`
-  query {
-    channels {
+  query GetChannel($slug: String!) {
+    channel(slug: $slug) {
       id
       name
       slug
       currencyCode
-      isActive
       defaultCountry {
         code
         country

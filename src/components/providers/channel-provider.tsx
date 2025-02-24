@@ -38,83 +38,52 @@ function LoadingState() {
   )
 }
 
-const defaultChannels = [
-  {
-    id: 'default',
-    name: 'Default Channel',
-    slug: 'default-channel',
-    currencyCode: 'CNY',
-    languageCode: 'zh-CN',
-    isActive: true,
-    defaultCountry: {
-      code: 'CN',
-      country: 'China'
-    }
-  },
-  {
-    id: 'us',
-    name: 'US Channel',
-    slug: 'us-channel',
-    currencyCode: 'USD',
-    languageCode: 'en-US',
-    isActive: true,
-    defaultCountry: {
-      code: 'US',
-      country: 'United States'
-    }
+const defaultChannel = {
+  id: 'default',
+  name: 'Default Channel',
+  slug: 'default-channel',
+  currencyCode: 'CNY',
+  languageCode: 'zh-CN',
+  defaultCountry: {
+    code: 'CN',
+    country: 'China'
   }
-]
+}
 
 export function ChannelProvider({
-  children,
-  defaultChannel = 'default-channel'
+  children
 }: {
   children: React.ReactNode
-  defaultChannel?: string
 }) {
-  const [currentChannel, setCurrentChannel] = useState<Channel | null>(null)
-  
-  const { data: channelsData, isLoading, isError } = useQuery({
-    queryKey: ['channels'],
+  const { data: channelData, isLoading, isError } = useQuery({
+    queryKey: ['channel'],
     queryFn: async () => {
       try {
-        const response = await graphqlRequestClient(CHANNELS_QUERY)
-        return response.channels
+        const response = await graphqlRequestClient(CHANNELS_QUERY, {
+          slug: process.env.NEXT_PUBLIC_DEFAULT_CHANNEL
+        })
+        return response.channel
       } catch (error) {
-        console.error('Failed to fetch channels:', error)
-        return defaultChannels
+        console.error('Failed to fetch channel:', error)
+        return defaultChannel
       }
     },
     staleTime: 1000 * 60 * 5, // 5分钟内数据不会重新获取
     cacheTime: 1000 * 60 * 30, // 缓存30分钟
   })
 
-  useEffect(() => {
-    if (!currentChannel) {
-      const channels = channelsData || defaultChannels
-      const defaultChannelData = channels.find(
-        (channel: Channel) => channel.slug === defaultChannel
-      )
-      if (defaultChannelData) {
-        setCurrentChannel(defaultChannelData)
-      } else {
-        setCurrentChannel(channels[0])
-      }
-    }
-  }, [channelsData, currentChannel, defaultChannel])
-
   if (isLoading) {
     return <LoadingState />
   }
 
-  const channels = channelsData || defaultChannels
+  const channel = channelData || defaultChannel
 
   return (
     <ChannelContext.Provider
       value={{
-        currentChannel: currentChannel || channels[0],
-        availableChannels: channels,
-        setCurrentChannel
+        currentChannel: channel,
+        availableChannels: [channel],
+        setCurrentChannel: () => {} // 单channel模式下不需要切换
       }}
     >
       {children}
