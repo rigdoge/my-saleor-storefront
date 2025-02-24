@@ -121,6 +121,20 @@ export const PRODUCT_BY_SLUG_QUERY = gql`
         alt
         type
       }
+      attributes {
+        attribute {
+          name
+          slug
+        }
+        values {
+          name
+          slug
+        }
+      }
+      metadata {
+        key
+        value
+      }
       pricing {
         priceRange {
           start {
@@ -130,19 +144,52 @@ export const PRODUCT_BY_SLUG_QUERY = gql`
             }
           }
         }
+        discount {
+          gross {
+            amount
+            currency
+          }
+        }
       }
       category {
         id
         name
         slug
+        ancestors(first: 5) {
+          edges {
+            node {
+              id
+              name
+              slug
+            }
+          }
+        }
       }
       collections {
+        id
         name
+        slug
       }
       isAvailable
       variants {
         id
         name
+        sku
+        attributes {
+          attribute {
+            name
+            slug
+          }
+          values {
+            name
+            slug
+          }
+        }
+        media {
+          url
+          alt
+          type
+        }
         quantityAvailable
         pricing {
           price {
@@ -151,8 +198,16 @@ export const PRODUCT_BY_SLUG_QUERY = gql`
               currency
             }
           }
+          discount {
+            gross {
+              amount
+              currency
+            }
+          }
         }
       }
+      seoDescription
+      seoTitle
     }
   }
 ` 

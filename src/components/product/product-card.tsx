@@ -15,21 +15,21 @@ interface ProductCardProps {
   product: {
     id: string
     name: string
-    description?: string | null
+    description: string
     slug: string
     price: number
     currency: string
     thumbnail: {
       url: string
-      alt?: string
+      alt: string
     }
-    category?: {
+    category: {
       id: string
       name: string
       slug: string
     } | null
-    isAvailable?: boolean
-    variants?: Array<{
+    isAvailable: boolean
+    variants: Array<{
       id: string
       name: string
       quantityAvailable: number
@@ -44,7 +44,12 @@ export function ProductCard({
   variant = "default",
   className,
 }: ProductCardProps) {
-  const isOutOfStock = product.variants?.every(v => v.quantityAvailable === 0)
+  const formattedPrice = new Intl.NumberFormat('zh-CN', {
+    style: 'currency',
+    currency: product.currency,
+  }).format(product.price)
+
+  const isOutOfStock = !product.isAvailable || product.variants.every(v => v.quantityAvailable === 0)
 
   return (
     <Card
@@ -58,7 +63,7 @@ export function ProductCard({
           <div className="aspect-square overflow-hidden relative">
             <Image
               src={product.thumbnail.url}
-              alt={product.thumbnail.alt || product.name}
+              alt={product.thumbnail.alt}
               width={500}
               height={500}
               className={cn(
@@ -91,7 +96,7 @@ export function ProductCard({
             </p>
           )}
           <p className="text-lg font-semibold">
-            {formatPrice(product.price, { currency: product.currency })}
+            {formattedPrice}
           </p>
         </CardContent>
       </Link>

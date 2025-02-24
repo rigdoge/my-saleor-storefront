@@ -49,6 +49,29 @@ interface Product {
   }>
 }
 
+// 解析商品描述
+function parseDescription(description: string | null): string {
+  if (!description) return ''
+  try {
+    const data = JSON.parse(description)
+    if (data.blocks) {
+      return data.blocks
+        .map((block: any) => {
+          if (block.type === 'paragraph') {
+            // 移除HTML标签,只保留文本
+            return block.data.text.replace(/<[^>]+>/g, '')
+          }
+          return ''
+        })
+        .join(' ')
+        .trim()
+    }
+    return description
+  } catch (error) {
+    return description
+  }
+}
+
 // 加载占位组件
 function ProductCardSkeleton() {
   return (
@@ -76,7 +99,7 @@ export function FeaturedProducts() {
       return response.products.edges.map((edge: { node: Product }) => ({
         id: edge.node.id,
         name: edge.node.name,
-        description: edge.node.description,
+        description: parseDescription(edge.node.description),
         slug: edge.node.slug,
         price: edge.node.pricing.priceRange.start.gross.amount,
         currency: edge.node.pricing.priceRange.start.gross.currency,

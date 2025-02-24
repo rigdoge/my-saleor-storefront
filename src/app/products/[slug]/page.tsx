@@ -3,13 +3,20 @@
 import { useQuery } from "@tanstack/react-query"
 import { PRODUCT_BY_SLUG_QUERY } from "@/lib/graphql/queries/products"
 import { graphqlRequestClient } from "@/lib/graphql/client"
-import { formatPrice } from "@/lib/utils"
-import Image from "next/image"
+import { useCart } from "@/components/providers/cart-provider"
 import { Button } from "@/components/ui/button"
-import { ShoppingBag, Heart } from "lucide-react"
+import { Heart, Share2 } from "lucide-react"
 import Link from "next/link"
+import { ProductGallery } from "@/components/product/product-gallery"
+import { ProductVariants } from "@/components/product/product-variants"
+import { ProductDetails } from "@/components/product/product-details"
+import { Separator } from "@/components/ui/separator"
+import { useState } from "react"
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
+  const { addItem } = useCart()
+  const [selectedVariant, setSelectedVariant] = useState<any>(null)
+
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', params.slug],
     queryFn: async () => {
@@ -22,25 +29,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         return null
       }
 
-      return {
-        id: response.product.id,
-        name: response.product.name,
-        description: response.product.description,
-        price: response.product.pricing.priceRange.start.gross.amount,
-        currency: response.product.pricing.priceRange.start.gross.currency,
-        thumbnail: {
-          url: response.product.thumbnail?.url || "/images/placeholder.jpg",
-          alt: response.product.thumbnail?.alt || response.product.name,
-        },
-        isAvailable: response.product.isAvailable,
-        variants: response.product.variants?.map((variant: any) => ({
-          id: variant.id,
-          name: variant.name,
-          quantityAvailable: variant.quantityAvailable,
-          price: variant.pricing?.price?.gross?.amount,
-          currency: variant.pricing?.price?.gross?.currency,
-        })) || []
-      }
+      return response.product
     }
   })
 
@@ -68,75 +57,86 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     )
   }
 
-  const isOutOfStock = product.variants.every(v => v.quantityAvailable === 0)
+  const handleAddToCart = () => {
+    if (!selectedVariant) return
+
+    addItem({
+      id: crypto.randomUUID(),
+      variantId: selectedVariant.id,
+      name: product.name,
+      slug: product.slug,
+      quantity: 1,
+      price: selectedVariant.pricing.price.gross.amount,
+      currency: selectedVariant.pricing.price.gross.currency,
+      thumbnail: product.thumbnail,
+      variant: {
+        id: selectedVariant.id,
+        name: selectedVariant.name,
+        quantityAvailable: selectedVariant.quantityAvailable
+      }
+    })
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto space-y-8 px-4 py-8">
       <div className="grid gap-8 md:grid-cols-2">
         {/* 商品图片 */}
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-          <Image
-            src={product.thumbnail.url}
-            alt={product.thumbnail.alt || product.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority
-          />
-        </div>
+        <ProductGallery media={product.media} />
 
         {/* 商品信息 */}
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold">{product.name}</h1>
-          <div className="mt-4 text-2xl font-bold text-primary">
-            {formatPrice(product.price, { currency: product.currency })}
-          </div>
-          
-          <div className="mt-6 space-y-6">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-lg font-medium">商品描述</h3>
-              <p className="mt-2 text-muted-foreground">{product.description}</p>
+              <h1 className="text-3xl font-bold">{product.name}</h1>
             </div>
-
-            {product.variants.length > 0 && (
-              <div>
-                <h3 className="text-lg font-medium">商品规格</h3>
-                <div className="mt-2 grid grid-cols-2 gap-2">
-                  {product.variants.map((variant) => (
-                    <Button
-                      key={variant.id}
-                      variant="outline"
-                      className="justify-between"
-                      disabled={variant.quantityAvailable === 0}
-                    >
-                      <span>{variant.name}</span>
-                      <span className="ml-2 text-muted-foreground">
-                        {variant.price ? formatPrice(variant.price, {
-                          currency: variant.currency
-                        }) : '暂无价格'}
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="flex gap-2">
+              <Button variant="outline" size="icon">
+                <Heart className="h-5 w-5" />
+                <span className="sr-only">收藏</span>
+              </Button>
+              <Button variant="outline" size="icon">
+                <Share2 className="h-5 w-5" />
+                <span className="sr-only">分享</span>
+              </Button>
+            </div>
           </div>
 
-          <div className="mt-8 flex gap-4">
-            <Button 
-              size="lg" 
-              className="flex-1"
-              disabled={isOutOfStock}
+          <Separator className="my-4" />
+          
+          {/* 商品规格 */}
+          <ProductVariants
+            variants={product.variants}
+            selectedVariant={selectedVariant}
+            onVariantSelect={setSelectedVariant}
+          />
+
+          {/* 加入购物车 */}
+          <div className="mt-8">
+            <Button
+              size="lg"
+              className="w-full"
+              disabled={!selectedVariant || selectedVariant.quantityAvailable === 0}
+              onClick={handleAddToCart}
             >
-              <ShoppingBag className="mr-2 h-5 w-5" />
-              {isOutOfStock ? '暂时缺货' : '加入购物车'}
-            </Button>
-            <Button size="lg" variant="outline">
-              <Heart className="h-5 w-5" />
+              {!selectedVariant
+                ? '请选择规格'
+                : selectedVariant.quantityAvailable === 0
+                ? '暂时缺货'
+                : '加入购物车'}
             </Button>
           </div>
         </div>
       </div>
+
+      {/* 商品详情 */}
+      <ProductDetails
+        details={{
+          description: product.description,
+          attributes: product.attributes,
+          metadata: product.metadata,
+          category: product.category
+        }}
+      />
     </div>
   )
 } 
