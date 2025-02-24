@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Truck, ShieldCheck, ArrowLeftRight, Clock } from 'lucide-react'
+import { ContentRenderer } from '@/components/editor/content-renderer'
 
 interface ProductAttribute {
   attribute: {
@@ -39,31 +40,6 @@ interface ProductDetails {
 
 interface ProductDetailsProps {
   details: ProductDetails
-}
-
-function parseDescription(description: string) {
-  try {
-    const data = JSON.parse(description)
-    if (data.blocks) {
-      return data.blocks.map((block: any) => {
-        switch (block.type) {
-          case 'paragraph':
-            return (
-              <div 
-                key={block.id} 
-                className="mb-4"
-                dangerouslySetInnerHTML={{ __html: block.data.text }}
-              />
-            )
-          default:
-            return null
-        }
-      })
-    }
-  } catch (error) {
-    // 如果解析失败，直接返回原始文本
-    return <p>{description}</p>
-  }
 }
 
 export function ProductDetails({ details }: ProductDetailsProps) {
@@ -125,7 +101,7 @@ export function ProductDetails({ details }: ProductDetailsProps) {
         </TabsList>
 
         <TabsContent value="description" className="space-y-4">
-          {parseDescription(details.description)}
+          <ContentRenderer content={details.description} />
         </TabsContent>
 
         <TabsContent value="specification" className="space-y-4">

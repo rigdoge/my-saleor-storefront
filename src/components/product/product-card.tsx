@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { Heart, ShoppingBag } from "lucide-react"
@@ -10,6 +12,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card"
+import { useFavorites } from "@/components/providers/favorites-provider"
 
 interface ProductCardProps {
   product: {
@@ -44,6 +47,21 @@ export function ProductCard({
   variant = "default",
   className,
 }: ProductCardProps) {
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites()
+
+  const handleFavoriteClick = () => {
+    if (isFavorite(product.id)) {
+      removeFromFavorites(product.id)
+    } else {
+      addToFavorites({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        thumbnail: product.thumbnail,
+      })
+    }
+  }
+
   const formattedPrice = new Intl.NumberFormat('zh-CN', {
     style: 'currency',
     currency: product.currency,
@@ -110,8 +128,16 @@ export function ProductCard({
             <ShoppingBag className="mr-2 h-4 w-4" />
             {isOutOfStock ? '暂时缺货' : '加入购物车'}
           </Button>
-          <Button variant="outline" size="sm" className="w-10 shrink-0 px-0">
-            <Heart className="h-4 w-4" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-10 shrink-0 px-0"
+            onClick={handleFavoriteClick}
+          >
+            <Heart className={cn(
+              "h-4 w-4",
+              isFavorite(product.id) && "fill-current"
+            )} />
             <span className="sr-only">添加到收藏</span>
           </Button>
         </div>

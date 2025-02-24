@@ -68,7 +68,7 @@ function parseDescription(description: string | null): string {
     }
     return description
   } catch (error) {
-    return description
+    return description || ''
   }
 }
 

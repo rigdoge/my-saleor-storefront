@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -9,6 +9,8 @@ import { Providers } from "@/components/providers"
 import { ChannelProvider } from "@/components/providers/channel-provider"
 import { AuthProvider } from "@/components/providers/auth-provider"
 import { CartProvider } from "@/components/providers/cart-provider"
+import { FavoritesProvider } from "@/components/providers/favorites-provider"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,6 +25,9 @@ export const metadata: Metadata = {
       { url: "/icons/icon-512x512.png", sizes: "512x512" },
     ],
   },
+}
+
+export const viewport: Viewport = {
   themeColor: "#000000",
 }
 
@@ -59,15 +64,18 @@ export default function RootLayout({
             <AuthProvider>
               <ChannelProvider>
                 <CartProvider>
-                  <div className="relative flex min-h-screen flex-col">
-                    <Header />
-                    <main className="flex-1">{children}</main>
-                    <Footer />
-                  </div>
+                  <FavoritesProvider>
+                    <div className="relative flex min-h-screen flex-col">
+                      <Header />
+                      <main className="flex-1">{children}</main>
+                      <Footer />
+                    </div>
+                  </FavoritesProvider>
                 </CartProvider>
               </ChannelProvider>
             </AuthProvider>
           </Providers>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
