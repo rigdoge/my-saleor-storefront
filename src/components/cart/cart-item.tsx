@@ -1,94 +1,101 @@
+'use client'
+
+import { useCart } from "@/components/providers/cart-provider"
+import { Button } from "@/components/ui/button"
+import { formatPrice } from "@/lib/utils"
+import type { CartItem as CartItemType } from "@/lib/types/cart"
+import { Minus, Plus, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { Minus, Plus, X } from "lucide-react"
-
-import { formatPrice } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
 
 interface CartItemProps {
-  item: {
-    id: string
-    name: string
-    price: number
-    quantity: number
-    thumbnail: {
-      url: string
-      alt?: string
-    }
-  }
-  onUpdateQuantity: (id: string, quantity: number) => void
-  onRemove: (id: string) => void
+  item: CartItemType
 }
 
-export function CartItem({
-  item,
-  onUpdateQuantity,
-  onRemove,
-}: CartItemProps) {
+export function CartItem({ item }: CartItemProps) {
+  const { updateQuantity, removeItem } = useCart()
+
   return (
-    <div className="flex gap-4 py-4">
-      <Link
-        href={`/products/${item.id}`}
-        className="relative aspect-square h-24 w-24 overflow-hidden rounded-lg border"
-      >
-        <Image
-          src={item.thumbnail.url}
-          alt={item.thumbnail.alt || item.name}
-          fill
-          className="object-cover"
-        />
-      </Link>
-      <div className="flex flex-1 flex-col justify-between">
-        <div className="flex justify-between">
-          <div>
-            <Link
-              href={`/products/${item.id}`}
-              className="text-lg font-semibold hover:underline"
-            >
-              {item.name}
-            </Link>
-            <p className="mt-1 text-sm text-muted-foreground">
-              单价: {formatPrice(item.price)}
-            </p>
-          </div>
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="flex items-start gap-4 rounded-lg border p-4"
+    >
+      <div className="relative aspect-square h-20 w-20 min-w-fit overflow-hidden rounded-md">
+        <Link href={`/products/${item.slug}`}>
+          <Image
+            src={item.thumbnail?.url || "/images/placeholder.jpg"}
+            alt={item.thumbnail?.alt || item.name}
+            fill
+            className="object-cover"
+            sizes="80px"
+          />
+        </Link>
+      </div>
+      <div className="flex flex-1 flex-col gap-1">
+        <div className="flex justify-between gap-2">
+          <Link
+            href={`/products/${item.slug}`}
+            className="line-clamp-2 flex-1 text-sm font-medium hover:underline"
+          >
+            {item.name}
+          </Link>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
-            onClick={() => onRemove(item.id)}
+            className="h-8 w-8 shrink-0"
+            onClick={() => removeItem(item.id)}
           >
             <X className="h-4 w-4" />
-            <span className="sr-only">移除</span>
+            <span className="sr-only">删除</span>
           </Button>
         </div>
-        <div className="flex items-center justify-between">
+        {item.variant && (
+          <p className="text-sm text-muted-foreground">
+            {item.variant.name}
+          </p>
+        )}
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+              onClick={() => updateQuantity(item.id, item.quantity - 1)}
               disabled={item.quantity <= 1}
             >
               <Minus className="h-4 w-4" />
               <span className="sr-only">减少数量</span>
             </Button>
-            <span className="w-12 text-center">{item.quantity}</span>
+            <span className="w-8 text-center">{item.quantity}</span>
             <Button
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+              disabled={item.variant?.quantityAvailable === item.quantity}
             >
               <Plus className="h-4 w-4" />
               <span className="sr-only">增加数量</span>
             </Button>
           </div>
-          <p className="text-lg font-semibold">
-            {formatPrice(item.price * item.quantity)}
-          </p>
+          <div className="flex flex-col items-end gap-1">
+            <span className="font-medium">
+              {formatPrice(item.price * item.quantity, {
+                currency: item.currency,
+              })}
+            </span>
+            {item.quantity > 1 && (
+              <span className="text-sm text-muted-foreground">
+                {formatPrice(item.price, { currency: item.currency })} / 件
+              </span>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 } 

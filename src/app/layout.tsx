@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer"
 import { Providers } from "@/components/providers"
 import { ChannelProvider } from "@/components/providers/channel-provider"
 import { AuthProvider } from "@/components/providers/auth-provider"
+import { CartProvider } from "@/components/providers/cart-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -57,11 +58,13 @@ export default function RootLayout({
           <Providers>
             <AuthProvider>
               <ChannelProvider>
-                <div className="relative flex min-h-screen flex-col">
-                  <Header />
-                  <main className="flex-1">{children}</main>
-                  <Footer />
-                </div>
+                <CartProvider>
+                  <div className="relative flex min-h-screen flex-col">
+                    <Header />
+                    <main className="flex-1">{children}</main>
+                    <Footer />
+                  </div>
+                </CartProvider>
               </ChannelProvider>
             </AuthProvider>
           </Providers>
