@@ -6,6 +6,7 @@ export interface CartItem {
   quantity: number
   price: number
   currency: string
+  stock?: number
   thumbnail?: {
     url: string
     alt?: string
@@ -26,7 +27,7 @@ export interface Cart {
 
 export interface CartContext {
   cart: Cart
-  addItem: (item: CartItem) => void
+  addItem: (item: CartItem) => boolean
   removeItem: (itemId: string) => void
   updateQuantity: (itemId: string, quantity: number) => void
   clearCart: () => void

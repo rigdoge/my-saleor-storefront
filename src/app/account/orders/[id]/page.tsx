@@ -141,7 +141,7 @@ export default function OrderPage({
                 </CardHeader>
                 <CardContent>
                   <div className="divide-y">
-                    {order.lines.map((line) => (
+                    {order.lines.map((line: any) => (
                       <div key={line.id} className="flex items-center gap-4 py-4">
                         <div className="relative h-20 w-20 overflow-hidden rounded-md">
                           <Image

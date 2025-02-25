@@ -86,7 +86,7 @@ export default function FavoritesPage() {
             <EmptyFavorites />
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {favoritesData.map((product) => (
+              {favoritesData.map((product: any) => (
                 <Card key={product.id} className="overflow-hidden">
                   <Link href={`/products/${product.slug}`}>
                     <div className="aspect-square relative">

@@ -1,48 +1,77 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { PRODUCT_BY_SLUG_QUERY } from "@/lib/graphql/queries/products"
-import { ADD_TO_FAVORITES_MUTATION, REMOVE_FROM_FAVORITES_MUTATION } from "@/lib/graphql/queries/favorites"
-import { graphqlRequestClient } from "@/lib/graphql/client"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@/components/providers/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Heart, Share2, Plus, Minus } from "lucide-react"
 import Link from "next/link"
-import { ProductGallery } from "@/components/product/product-gallery"
-import { ProductVariants } from "@/components/product/product-variants"
-import { ProductDetails } from "@/components/product/product-details"
 import { ProductSkeleton } from "@/components/product/product-skeleton"
-import { Separator } from "@/components/ui/separator"
 import { useState, useEffect } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { useFavorites } from "@/components/providers/favorites-provider"
+import { useProductBySlugQuery } from "@/lib/graphql/__generated__/types"
+import { DynamicProductDetail } from "@/components/product-templates"
+import { ProductTemplateSkeleton } from "@/components/product-templates/product-template-skeleton"
+
+// 定义ProductAttribute接口，与ProductDetails组件中的定义保持一致
+interface ProductAttribute {
+  attribute: {
+    name: string
+    slug: string
+  }
+  values: Array<{
+    name: string
+    slug: string
+  }>
+}
+
+// 转换GraphQL返回的attributes为ProductDetails组件期望的格式
+function convertAttributes(attributes: any[]): ProductAttribute[] {
+  if (!attributes) return []
+  
+  return attributes.map(attr => ({
+    attribute: {
+      name: attr.attribute.name || '',
+      slug: attr.attribute.slug || ''
+    },
+    values: attr.values.map((val: any) => ({
+      name: val.name || '',
+      slug: val.slug || ''
+    }))
+  }))
+}
+
+// 转换GraphQL返回的category为ProductDetails组件期望的格式
+function convertCategory(category: any): { 
+  name: string; 
+  ancestors?: { edges: Array<{ node: { name: string; slug: string } }> } 
+} {
+  if (!category) return { name: '' }
+  
+  return {
+    name: category.name || '',
+    ancestors: category.ancestors
+  }
+}
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const { addItem } = useCart()
   const { user } = useAuth()
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const [selectedVariant, setSelectedVariant] = useState<any>(null)
-  const [quantity, setQuantity] = useState(1)
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites()
+  const [quantity, setQuantity] = useState(1)
+  const [isAddingToCart, setIsAddingToCart] = useState(false)
 
-  const { data: product, isLoading } = useQuery({
-    queryKey: ['product', params.slug],
-    queryFn: async () => {
-      const response = await graphqlRequestClient(PRODUCT_BY_SLUG_QUERY, {
-        slug: params.slug,
-        channel: 'default-channel'
-      })
-      
-      if (!response.product) {
-        return null
-      }
-
-      return response.product
-    }
+  const { data, isLoading, error } = useProductBySlugQuery({
+    slug: params.slug,
+    channel: 'default-channel'
   })
+  
+  const product = data?.product
+  const [selectedVariant, setSelectedVariant] = useState(product?.variants?.[0] || null)
 
   // 如果商品只有一个规格，自动选择该规格
   useEffect(() => {
@@ -52,7 +81,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   }, [product])
 
   if (isLoading) {
-    return <ProductSkeleton />
+    return <ProductTemplateSkeleton />
   }
 
   if (!product) {
@@ -79,18 +108,33 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         id: product.id,
         name: product.name,
         slug: product.slug,
-        thumbnail: product.thumbnail,
+        thumbnail: product.thumbnail ? {
+          url: product.thumbnail.url,
+          alt: product.thumbnail.alt || ""
+        } : undefined,
       })
     }
   }
 
   const handleAddToCart = () => {
+    if (!product || !product.variants) return
+    
+    setIsAddingToCart(true)
+    
     // 如果商品没有规格选项，使用默认价格
     const variant = selectedVariant || (product.variants.length === 1 ? product.variants[0] : null)
-    if (!variant && product.variants.length > 1) return
+    if (!variant && product.variants.length > 1) {
+      setIsAddingToCart(false)
+      return
+    }
 
-    const price = variant ? variant.pricing.price.gross.amount : product.pricing.priceRange.start.gross.amount
-    const currency = variant ? variant.pricing.price.gross.currency : product.pricing.priceRange.start.gross.currency
+    const price = variant && variant.pricing?.price?.gross?.amount 
+      ? variant.pricing.price.gross.amount 
+      : product.pricing?.priceRange?.start?.gross?.amount || 0
+      
+    const currency = variant && variant.pricing?.price?.gross?.currency 
+      ? variant.pricing.price.gross.currency 
+      : product.pricing?.priceRange?.start?.gross?.currency || 'CNY'
 
     addItem({
       id: crypto.randomUUID(),
@@ -100,127 +144,44 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       quantity,
       price,
       currency,
-      thumbnail: product.thumbnail,
+      thumbnail: product.thumbnail ? {
+        url: product.thumbnail.url,
+        alt: product.thumbnail.alt || ""
+      } : undefined,
       variant: variant ? {
         id: variant.id,
         name: variant.name,
-        quantityAvailable: variant.quantityAvailable
+        quantityAvailable: variant.quantityAvailable || 0
       } : undefined
     })
 
     toast({
       description: "已添加到购物车",
     })
+    
+    setTimeout(() => setIsAddingToCart(false), 500)
   }
 
-  const hasVariants = product.variants.length > 1
-  const isOutOfStock = !product.isAvailable || product.variants.every(v => v.quantityAvailable === 0)
+  const hasVariants = product?.variants && product.variants.length > 1
+  const isOutOfStock = product?.isAvailable === false || (product?.variants && product.variants.every((v: any) => v.quantityAvailable === 0))
   
   const maxQuantity = selectedVariant?.quantityAvailable || 99
   
-  const handleDecreaseQuantity = () => {
-    setQuantity(prev => Math.max(1, prev - 1))
+  const handleQuantityChange = (newQuantity: number) => {
+    setQuantity(newQuantity)
   }
 
-  const handleIncreaseQuantity = () => {
-    setQuantity(prev => Math.min(maxQuantity, prev + 1))
-  }
-
+  // 使用动态产品详情组件替换原有的静态布局
   return (
-    <div className="container mx-auto space-y-8 px-4 py-8">
-      <div className="grid gap-8 md:grid-cols-2">
-        {/* 商品图片 */}
-        <ProductGallery media={product.media} />
-
-        {/* 商品信息 */}
-        <div className="flex flex-col">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold">{product.name}</h1>
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                variant="outline"
-                size="icon"
-                className="w-10 shrink-0 px-0"
-                onClick={handleFavoriteClick}
-              >
-                <Heart className={cn(
-                  "h-4 w-4",
-                  isFavorite(product?.id || "") && "fill-current"
-                )} />
-                <span className="sr-only">收藏</span>
-              </Button>
-              <Button variant="outline" size="icon">
-                <Share2 className="h-5 w-5" />
-                <span className="sr-only">分享</span>
-              </Button>
-            </div>
-          </div>
-
-          <Separator className="my-4" />
-          
-          {/* 商品规格 */}
-          {hasVariants && (
-            <ProductVariants
-              variants={product.variants}
-              selectedVariant={selectedVariant}
-              onVariantSelect={setSelectedVariant}
-            />
-          )}
-
-          {/* 加入购物车 */}
-          <div className="mt-8 flex gap-4">
-            <div className="flex items-center rounded-md border">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-11 rounded-none rounded-l-md"
-                onClick={handleDecreaseQuantity}
-                disabled={isOutOfStock || (hasVariants && !selectedVariant)}
-              >
-                <Minus className="h-4 w-4" />
-                <span className="sr-only">减少数量</span>
-              </Button>
-              <div className="flex h-11 w-14 items-center justify-center text-center">
-                {quantity}
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-11 rounded-none rounded-r-md"
-                onClick={handleIncreaseQuantity}
-                disabled={isOutOfStock || (hasVariants && !selectedVariant) || quantity >= maxQuantity}
-              >
-                <Plus className="h-4 w-4" />
-                <span className="sr-only">增加数量</span>
-              </Button>
-            </div>
-            <Button
-              size="lg"
-              className="flex-1"
-              disabled={isOutOfStock || (hasVariants && !selectedVariant)}
-              onClick={handleAddToCart}
-            >
-              {isOutOfStock
-                ? '暂时缺货'
-                : hasVariants && !selectedVariant
-                ? '请选择规格'
-                : '加入购物车'}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* 商品详情 */}
-      <ProductDetails
-        details={{
-          description: product.description,
-          attributes: product.attributes,
-          metadata: product.metadata,
-          category: product.category
-        }}
-      />
-    </div>
+    <DynamicProductDetail
+      product={product}
+      selectedVariant={selectedVariant}
+      quantity={quantity}
+      onQuantityChange={handleQuantityChange}
+      onAddToCart={handleAddToCart}
+      onToggleFavorite={handleFavoriteClick}
+      isFavorite={isFavorite(product?.id || "")}
+      isAddingToCart={isAddingToCart}
+    />
   )
 } 

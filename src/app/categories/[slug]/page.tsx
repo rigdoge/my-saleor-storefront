@@ -5,7 +5,7 @@ import React from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import { useChannel } from '@/components/providers/channel-provider'
-import { CATEGORY_BY_SLUG_QUERY } from '@/lib/graphql/queries/categories'
+import { CATEGORY_BY_SLUG_QUERY, CATEGORY_BY_ID_QUERY } from '@/lib/graphql/queries/categories'
 import { PRODUCTS_QUERY, getProductFilters } from '@/lib/graphql/queries/products'
 import { graphqlRequestClient } from '@/lib/graphql/client'
 import { ProductCard } from '@/components/product/product-card'
@@ -13,8 +13,9 @@ import { ProductFilter } from '@/components/product/product-filter'
 import { LoadMore } from '@/components/ui/load-more'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
@@ -41,18 +42,112 @@ export default function CategoryPage({
 }) {
   const searchParams = useSearchParams()
   const { currentChannel } = useChannel()
+  const [retryCount, setRetryCount] = useState(0)
+  const [fallbackToId, setFallbackToId] = useState(false)
+  const [categoryId, setCategoryId] = useState<string | null>(null)
+  
+  // 特殊处理 Accessories/homewares 分类
+  const isAccessoriesHomewares = params.slug === 'homewares' || params.slug === 'accessories'
 
   // 获取分类信息
-  const { data: categoryData, isLoading: isLoadingCategory } = useQuery({
-    queryKey: ['category', params.slug],
+  const { 
+    data: categoryData, 
+    isLoading: isLoadingCategory,
+    error: categoryError,
+    refetch: refetchCategory
+  } = useQuery({
+    queryKey: ['category', params.slug, fallbackToId, categoryId, retryCount, isAccessoriesHomewares],
     queryFn: async () => {
-      const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
-        slug: params.slug,
-        channel: currentChannel.slug
-      })
-      return response.category
-    }
+      try {
+        // 特殊处理 Accessories/homewares 分类
+        if (isAccessoriesHomewares) {
+          console.log(`特殊处理 ${params.slug} 分类数据获取`)
+          
+          // 添加额外的重试和错误处理
+          let retries = 0
+          const maxRetries = 3
+          
+          while (retries < maxRetries) {
+            try {
+              const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
+                slug: params.slug,
+                channel: currentChannel.slug
+              }, true) // 添加第三个参数，表示这是特殊处理的请求
+              
+              if (response && response.category) {
+                setCategoryId(response.category.id)
+                
+                // 验证子分类数据
+                if (response.category.children) {
+                  if (!response.category.children.edges || !Array.isArray(response.category.children.edges)) {
+                    response.category.children.edges = []
+                  } else {
+                    response.category.children.edges = response.category.children.edges.filter(
+                      (edge: { node?: { id?: string } }) => edge && edge.node && edge.node.id
+                    )
+                  }
+                }
+                
+                return response.category
+              }
+              
+              throw new Error(`无法获取 ${params.slug} 分类数据`)
+            } catch (err) {
+              retries++
+              if (retries >= maxRetries) throw err
+              await new Promise(resolve => setTimeout(resolve, 1000 * retries))
+            }
+          }
+        }
+        
+        // 首先尝试通过 slug 获取
+        if (!fallbackToId) {
+          const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
+            slug: params.slug,
+            channel: currentChannel.slug
+          })
+          
+          // 如果找到分类，保存 ID 以备后用
+          if (response.category) {
+            setCategoryId(response.category.id)
+            return response.category
+          }
+          
+          // 如果没有找到分类，尝试使用 ID 查询
+          setFallbackToId(true)
+          return null
+        } 
+        
+        // 如果通过 slug 查询失败，尝试通过 ID 查询
+        if (categoryId) {
+          const response = await graphqlRequestClient(CATEGORY_BY_ID_QUERY, {
+            id: categoryId,
+            channel: currentChannel.slug
+          })
+          return response.category
+        }
+        
+        return null
+      } catch (err) {
+        console.error('获取分类信息失败:', err)
+        throw err
+      }
+    },
+    retry: isAccessoriesHomewares ? 5 : 2, // 为特殊分类增加重试次数
+    retryDelay: attempt => Math.min(1000 * 2 ** attempt, 10000), // 指数退避策略
+    staleTime: 5 * 60 * 1000
   })
+
+  // 如果发现错误，尝试重新获取数据
+  useEffect(() => {
+    if (categoryError) {
+      console.error('分类数据加载错误，尝试重新获取:', categoryError)
+      const timer = setTimeout(() => {
+        setRetryCount(prev => prev + 1)
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [categoryError])
 
   // 获取筛选条件
   const searchParamsObj = Object.fromEntries(searchParams.entries())
@@ -67,29 +162,67 @@ export default function CategoryPage({
     isLoading: isLoadingProducts,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
+    error: productsError
   } = useInfiniteQuery({
-    queryKey: ['products', currentChannel.slug, filter, sortBy],
+    queryKey: ['products', currentChannel.slug, filter, sortBy, retryCount, isAccessoriesHomewares],
     queryFn: async ({ pageParam }) => {
-      const response = await graphqlRequestClient(PRODUCTS_QUERY, {
-        first: 24,
-        after: pageParam,
-        channel: currentChannel.slug,
-        filter,
-        sortBy
-      })
-      return response.products
+      try {
+        // 特殊处理 Accessories/homewares 分类的商品
+        if (isAccessoriesHomewares) {
+          console.log(`特殊处理 ${params.slug} 分类商品数据获取`)
+          
+          // 添加额外的重试和错误处理
+          let retries = 0
+          const maxRetries = 3
+          
+          while (retries < maxRetries) {
+            try {
+              const response = await graphqlRequestClient(PRODUCTS_QUERY, {
+                first: 24,
+                after: pageParam,
+                channel: currentChannel.slug,
+                filter,
+                sortBy
+              }, true) // 添加第三个参数，表示这是特殊处理的请求
+              
+              if (response && response.products) {
+                return response.products
+              }
+              
+              throw new Error(`无法获取 ${params.slug} 分类商品数据`)
+            } catch (err) {
+              retries++
+              if (retries >= maxRetries) throw err
+              await new Promise(resolve => setTimeout(resolve, 1000 * retries))
+            }
+          }
+        }
+        
+        const response = await graphqlRequestClient(PRODUCTS_QUERY, {
+          first: 24,
+          after: pageParam,
+          channel: currentChannel.slug,
+          filter,
+          sortBy
+        })
+        return response.products
+      } catch (err) {
+        console.error('获取商品列表失败:', err)
+        throw err
+      }
     },
     initialPageParam: null,
     getNextPageParam: (lastPage: any) => {
-      if (lastPage.pageInfo.hasNextPage) {
+      if (lastPage && lastPage.pageInfo && lastPage.pageInfo.hasNextPage) {
         return lastPage.pageInfo.endCursor
       }
       return undefined
     },
     enabled: !!categoryData,
-    staleTime: 2 * 60 * 1000,
-    gcTime: 10 * 60 * 1000
+    staleTime: isAccessoriesHomewares ? 1 * 60 * 1000 : 2 * 60 * 1000, // 特殊分类缓存时间更短
+    gcTime: 10 * 60 * 1000,
+    retry: isAccessoriesHomewares ? 5 : 2 // 为特殊分类增加重试次数
   })
 
   // 计算商品总数和价格范围
@@ -121,6 +254,16 @@ export default function CategoryPage({
     { min: Infinity, max: -Infinity }
   )
 
+  // 安全地获取子分类
+  const getChildCategories = () => {
+    if (!categoryData || !categoryData.children || !categoryData.children.edges) {
+      return []
+    }
+    return categoryData.children.edges
+      .filter((edge: any) => edge && edge.node && edge.node.id)
+      .map((edge: any) => edge.node)
+  }
+
   if (isLoadingCategory) {
     return (
       <div className="container py-10">
@@ -129,18 +272,31 @@ export default function CategoryPage({
     )
   }
 
-  if (!categoryData) {
+  if (categoryError || !categoryData) {
     return (
       <div className="container py-10">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">分类不存在</h1>
+          <h1 className="text-2xl font-bold">加载分类信息失败</h1>
           <p className="mt-2 text-muted-foreground">
-            您访问的分类可能已被删除或移动
+            无法加载分类信息，请稍后再试
           </p>
+          <Button 
+            onClick={() => {
+              setRetryCount(prev => prev + 1)
+              refetchCategory()
+            }} 
+            variant="outline" 
+            className="mt-4"
+          >
+            <RefreshCw className="mr-2 h-4 w-4" />
+            重试
+          </Button>
         </div>
       </div>
     )
   }
+
+  const childCategories = getChildCategories()
 
   return (
     <div className="container py-10">
@@ -194,10 +350,10 @@ export default function CategoryPage({
         </div>
 
         {/* 子分类列表 */}
-        {categoryData.children?.edges.length > 0 && (
+        {childCategories.length > 0 && (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {categoryData.children.edges.map(({ node }: { node: any }) => (
+              {childCategories.map((node: any) => (
                 <Link
                   key={node.id}
                   href={`/categories/${node.slug}`}
@@ -234,6 +390,21 @@ export default function CategoryPage({
               </div>
             ))}
           </div>
+        ) : productsError ? (
+          <div className="py-12 text-center">
+            <p className="text-lg font-medium text-red-500">加载商品失败</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              获取商品数据时出错，请稍后再试
+            </p>
+            <Button 
+              onClick={() => setRetryCount(prev => prev + 1)} 
+              variant="outline" 
+              className="mt-4"
+            >
+              <RefreshCw className="mr-2 h-4 w-4" />
+              重试
+            </Button>
+          </div>
         ) : products.length === 0 ? (
           <div className="py-12 text-center">
             <p className="text-lg font-medium">暂无商品</p>
@@ -257,7 +428,7 @@ export default function CategoryPage({
         )}
 
         {/* 加载更多 */}
-        {products.length > 0 && (
+        {products.length > 0 && !productsError && (
           <LoadMore
             onLoadMore={() => fetchNextPage()}
             isLoading={isFetchingNextPage}

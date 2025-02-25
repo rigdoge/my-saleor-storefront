@@ -77,7 +77,7 @@ export default function OrdersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {ordersData.map((order) => (
+                  {ordersData.map((order: any) => (
                     <TableRow key={order.id}>
                       <TableCell>
                         <Link
@@ -93,7 +93,7 @@ export default function OrdersPage() {
                       <TableCell>{order.status}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {order.lines.map((line) => (
+                          {order.lines.map((line: any) => (
                             <div
                               key={line.id}
                               className="relative h-10 w-10 overflow-hidden rounded-md"

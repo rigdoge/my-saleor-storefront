@@ -127,11 +127,50 @@ export const testApiConnection = async () => {
   }
 }
 
-export const graphqlRequestClient = async (query: string, variables = {}, retryCount = 0): Promise<any> => {
+export const graphqlRequestClient = async (
+  query: string, 
+  variables = {}, 
+  specialHandling = false, 
+  retryCount = 0
+): Promise<any> => {
   try {
     // 每次请求时更新 headers
     const headers = getAuthHeaders()
     graphqlClient.setHeaders(headers)
+    
+    // 特殊处理逻辑
+    if (specialHandling) {
+      console.log('使用特殊处理逻辑处理请求:', { 
+        query: query.substring(0, 50) + '...',
+        variables
+      })
+      
+      // 对于特殊处理的请求，不使用缓存
+      // 打印请求信息
+      console.log('特殊处理 GraphQL 请求:', {
+        query: query.substring(0, 100) + '...',
+        variables,
+        endpoint,
+      })
+
+      // 添加超时处理，特殊请求使用更长的超时时间
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('特殊请求超时，请稍后重试'))
+        }, REQUEST_TIMEOUT * 2)
+      })
+
+      // 执行请求
+      const responsePromise = graphqlClient.request(query, variables)
+      const response = await Promise.race([responsePromise, timeoutPromise]) as any
+      
+      // 验证响应数据
+      if (!response) {
+        throw new Error('特殊请求返回空响应')
+      }
+      
+      return response
+    }
     
     // 检查是否可以使用缓存
     if (isCacheable(query)) {
@@ -193,7 +232,7 @@ export const graphqlRequestClient = async (query: string, variables = {}, retryC
       // 指数退避重试
       const delay = Math.pow(2, retryCount) * 1000
       await new Promise(resolve => setTimeout(resolve, delay))
-      return graphqlRequestClient(query, variables, retryCount + 1)
+      return graphqlRequestClient(query, variables, specialHandling, retryCount + 1)
     }
 
     // 处理特定的错误类型

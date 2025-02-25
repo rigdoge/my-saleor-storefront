@@ -76,11 +76,14 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
           </div>
         ) : suggestions?.products?.edges?.length ? (
           <CommandGroup heading="商品">
-            {suggestions.products.edges.map(({ node: product }) => (
+            {suggestions.products.edges.map(({ node: product }: { node: any }) => (
               <CommandItem
                 key={product.id}
                 value={`/products/${product.slug}`}
-                onSelect={handleSelect}
+                onSelect={() => {
+                  router.push(`/products/${product.slug}`)
+                  onOpenChange?.(false)
+                }}
                 className="flex items-center gap-2 px-4 py-2"
               >
                 <div className="relative h-10 w-10 overflow-hidden rounded-md">

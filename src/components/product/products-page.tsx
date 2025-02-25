@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import { Container } from '@/components/ui/container'
 import { ProductGrid } from '@/components/product/product-grid'
@@ -5,9 +7,10 @@ import { ProductFilter } from '@/components/product/product-filter'
 import { useProducts } from '@/lib/hooks/use-products'
 import { LoadingProducts } from '@/components/shared/loading-products'
 import { EmptyState } from '@/components/shared/empty-state'
+import { LoadMore } from '@/components/ui/load-more'
 
 export function ProductsPage() {
-  const { products, isLoading, error } = useProducts({})
+  const { products, isLoading, error, hasMore, loadMore } = useProducts({})
 
   return (
     <Container>
@@ -20,7 +23,7 @@ export function ProductsPage() {
           </div>
           
           <div className="md:col-span-3">
-            {isLoading ? (
+            {isLoading && products.length === 0 ? (
               <LoadingProducts count={8} />
             ) : error ? (
               <EmptyState
@@ -29,7 +32,15 @@ export function ProductsPage() {
                 action={{ label: '刷新', onClick: () => window.location.reload() }}
               />
             ) : products && products.length > 0 ? (
-              <ProductGrid products={products} />
+              <>
+                <ProductGrid products={products} />
+                
+                <LoadMore
+                  onLoadMore={loadMore}
+                  isLoading={isLoading}
+                  hasMore={hasMore}
+                />
+              </>
             ) : (
               <EmptyState
                 title="没有找到产品"

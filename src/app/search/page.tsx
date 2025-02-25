@@ -72,14 +72,10 @@ export default function SearchPage() {
             <ProductCardSkeleton />
           </div>
         ) : !searchData || searchData.length === 0 ? (
-          <div className="text-center">
-            <p className="text-lg text-muted-foreground">
-              未找到相关商品
-            </p>
-          </div>
+          <div className="text-center text-muted-foreground">未找到相关商品</div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {searchData.map((product) => (
+            {searchData.map((product: any) => (
               <ProductCard 
                 key={product.id} 
                 product={product}
