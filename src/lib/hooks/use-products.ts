@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from 'react'
 import { Product } from '@/lib/types'
 import { graphqlRequestClient } from '@/lib/graphql/client'
@@ -89,8 +91,10 @@ export function useProducts({
               alt: '示例产品图片'
             },
             isAvailable: true,
-            rating: 4.5,
-            reviewCount: 10,
+            metadata: [
+              { key: 'rating', value: '4.5' },
+              { key: 'reviewCount', value: '10' }
+            ],
             category: {
               id: 'category-1',
               name: '示例分类',
@@ -105,7 +109,22 @@ export function useProducts({
         totalCount: 8
       }
       
-      const newProducts = productsData.edges.map((edge: any) => edge.node)
+      const newProducts = productsData.edges.map((edge: any) => {
+        const product = edge.node;
+        
+        // 处理metadata，将其转换为更易用的格式
+        if (product.metadata && Array.isArray(product.metadata)) {
+          product.metadata.forEach((meta: {key: string, value: string}) => {
+            if (meta.key === 'rating') {
+              product.rating = parseFloat(meta.value);
+            } else if (meta.key === 'reviewCount') {
+              product.reviewCount = parseInt(meta.value, 10);
+            }
+          });
+        }
+        
+        return product;
+      });
       
       setProducts(prev => isLoadMore ? [...prev, ...newProducts] : newProducts)
       setTotalCount(productsData.totalCount || newProducts.length)
