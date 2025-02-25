@@ -1,0 +1,26 @@
+<svg width="320" height="180" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="180" fill="#f8fafc" />
+  
+  <!-- 顶部导航栏 -->
+  <rect x="0" y="0" width="320" height="20" fill="#e2e8f0" />
+  <rect x="10" y="5" width="40" height="10" fill="#cbd5e1" rx="2" />
+  <circle cx="300" cy="10" r="5" fill="#cbd5e1" />
+  <circle cx="280" cy="10" r="5" fill="#cbd5e1" />
+  
+  <!-- 左侧大图片 -->
+  <rect x="10" y="30" width="150" height="140" fill="#cbd5e1" rx="4" />
+  
+  <!-- 右侧产品信息 -->
+  <rect x="170" y="30" width="140" height="15" fill="#94a3b8" rx="2" />
+  <rect x="170" y="50" width="80" height="10" fill="#cbd5e1" rx="2" />
+  
+  <!-- 评分 -->
+  <rect x="170" y="70" width="80" height="10" fill="#cbd5e1" rx="2" />
+  
+  <!-- 产品描述 -->
+  <rect x="170" y="90" width="140" height="30" fill="#e2e8f0" rx="2" />
+  
+  <!-- 选项区域 -->
+  <rect x="170" y="130" width="140" height="40" fill="#f1f5f9" rx="4" />
+  <rect x="180" y="140" width="120" height="20" fill="#6366f1" rx="4" />
+</svg> 

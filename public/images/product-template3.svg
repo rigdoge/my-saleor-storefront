@@ -1,0 +1,32 @@
+<svg width="320" height="180" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+  <!-- 黑色背景 -->
+  <rect width="320" height="180" fill="#000000" />
+  
+  <!-- 顶部大图区域 -->
+  <rect x="0" y="0" width="320" height="70" fill="#0f172a" />
+  <rect x="0" y="0" width="320" height="70" fill="url(#gradient)" opacity="0.7" />
+  
+  <!-- 中间产品信息区域 -->
+  <rect x="10" y="80" width="140" height="90" fill="#1e293b" rx="4" />
+  <rect x="170" y="80" width="140" height="90" fill="#1e293b" rx="4" />
+  
+  <!-- 金色标题和元素 -->
+  <rect x="120" y="30" width="80" height="10" fill="#fbbf24" rx="2" />
+  <rect x="180" y="100" width="120" height="15" fill="#fbbf24" rx="2" />
+  <rect x="180" y="130" width="120" height="20" fill="#fbbf24" rx="4" />
+  
+  <!-- 产品图片占位符 -->
+  <rect x="20" y="90" width="120" height="60" fill="#334155" rx="4" />
+  
+  <!-- 品牌故事区域 -->
+  <rect x="90" y="180" width="140" height="10" fill="#fbbf24" rx="2" opacity="0.8" />
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#000000;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg> 

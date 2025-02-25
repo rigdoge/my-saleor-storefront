@@ -53,7 +53,7 @@ export function ProductTemplateSelector() {
         <TabsContent value="template1">
           <div className="relative aspect-video overflow-hidden rounded-md mb-2 border border-slate-200 dark:border-slate-700">
             <Image 
-              src="/images/product-template1.jpg" 
+              src="/images/product-template1.svg" 
               alt="产品详情页样式1" 
               width={320} 
               height={180}
@@ -66,7 +66,7 @@ export function ProductTemplateSelector() {
         <TabsContent value="template2">
           <div className="relative aspect-video overflow-hidden rounded-md mb-2 border border-slate-200 dark:border-slate-700">
             <Image 
-              src="/images/product-template2.jpg" 
+              src="/images/product-template2.svg" 
               alt="产品详情页样式2" 
               width={320} 
               height={180}
@@ -79,7 +79,7 @@ export function ProductTemplateSelector() {
         <TabsContent value="template3">
           <div className="relative aspect-video overflow-hidden rounded-md mb-2 border border-slate-200 dark:border-slate-700">
             <Image 
-              src="/images/product-template3.jpg" 
+              src="/images/product-template3.svg" 
               alt="产品详情页样式3" 
               width={320} 
               height={180}
