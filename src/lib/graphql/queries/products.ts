@@ -252,12 +252,14 @@ export const GET_PRODUCTS = gql`
     $after: String
     $filter: ProductFilterInput
     $sortBy: ProductOrder
+    $channel: String!
   ) {
     products(
       first: $first
       after: $after
       filter: $filter
       sortBy: $sortBy
+      channel: $channel
     ) {
       edges {
         node {

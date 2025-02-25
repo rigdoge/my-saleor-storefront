@@ -85,7 +85,8 @@ export function useProducts({
             field: sort.split('_')[0].toUpperCase(),
             direction: sort.includes('_desc') ? 'DESC' : 'ASC'
           }
-        } : {})
+        } : {}),
+        channel: 'default-channel'
       }
       
       const data = await graphqlRequestClient(GET_PRODUCTS, variables)
