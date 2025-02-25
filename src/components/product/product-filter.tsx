@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import React from 'react'
 import { Button } from '@/components/ui/button'
@@ -6,7 +6,13 @@ import { Separator } from '@/components/ui/separator'
 import { FilterX } from 'lucide-react'
 import { useUrlParams } from '@/lib/hooks/use-url-params'
 
-export function ProductFilter() {
+interface ProductFilterProps {
+  minPrice?: number
+  maxPrice?: number
+  totalCount?: number
+}
+
+export function ProductFilter({ minPrice = 0, maxPrice = 10000, totalCount }: ProductFilterProps) {
   const { filters, updateParams } = useUrlParams({})
   
   // 清除所有筛选条件
@@ -34,6 +40,12 @@ export function ProductFilter() {
         )}
       </div>
       
+      {totalCount !== undefined && (
+        <div className="text-sm text-muted-foreground">
+          共 {totalCount} 件商品
+        </div>
+      )}
+      
       <Separator />
       
       <div className="space-y-4">
@@ -46,6 +58,8 @@ export function ProductFilter() {
                 type="number" 
                 className="w-full border-0 bg-transparent p-0 text-sm focus:outline-none focus:ring-0" 
                 placeholder="¥"
+                min={minPrice}
+                max={maxPrice}
                 value={filters.minPrice || ''}
                 onChange={(e) => {
                   updateParams({ 
@@ -64,6 +78,8 @@ export function ProductFilter() {
                 type="number" 
                 className="w-full border-0 bg-transparent p-0 text-sm focus:outline-none focus:ring-0" 
                 placeholder="¥"
+                min={minPrice}
+                max={maxPrice}
                 value={filters.maxPrice || ''}
                 onChange={(e) => {
                   updateParams({ 
