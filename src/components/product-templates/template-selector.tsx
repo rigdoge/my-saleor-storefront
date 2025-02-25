@@ -14,6 +14,7 @@ export function ProductTemplateSelector() {
   
   const handleSelect = (value: string) => {
     selectTemplate(value as any)
+    setIsOpen(false)
   }
   
   if (!isOpen) {
@@ -44,10 +45,13 @@ export function ProductTemplateSelector() {
       </div>
       
       <Tabs value={selectedTemplate} onValueChange={handleSelect}>
-        <TabsList className="w-full mb-4">
+        <TabsList className="w-full mb-4 grid grid-cols-6">
           <TabsTrigger value="template1" className="flex-1">样式 1</TabsTrigger>
           <TabsTrigger value="template2" className="flex-1">样式 2</TabsTrigger>
           <TabsTrigger value="template3" className="flex-1">样式 3</TabsTrigger>
+          <TabsTrigger value="template4" className="flex-1">样式 4</TabsTrigger>
+          <TabsTrigger value="template5" className="flex-1">样式 5</TabsTrigger>
+          <TabsTrigger value="template6" className="flex-1">样式 6</TabsTrigger>
         </TabsList>
         
         <TabsContent value="template1">
@@ -88,16 +92,46 @@ export function ProductTemplateSelector() {
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400">豪华风格，富媒体展示与沉浸式体验</p>
         </TabsContent>
+        
+        <TabsContent value="template4">
+          <div className="relative aspect-video overflow-hidden rounded-md mb-2 border border-slate-200 dark:border-slate-700">
+            <Image 
+              src="/images/product-template4.svg" 
+              alt="产品详情页样式4" 
+              width={320} 
+              height={180}
+              className="object-cover"
+            />
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">简约商务风格，突出产品细节与规格信息</p>
+        </TabsContent>
+        
+        <TabsContent value="template5">
+          <div className="relative aspect-video overflow-hidden rounded-md mb-2 border border-slate-200 dark:border-slate-700">
+            <Image 
+              src="/images/product-template5.svg" 
+              alt="产品详情页样式5" 
+              width={320} 
+              height={180}
+              className="object-cover"
+            />
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">轻量简约风格，突出尺寸选择和产品特性</p>
+        </TabsContent>
+        
+        <TabsContent value="template6">
+          <div className="relative aspect-video overflow-hidden rounded-md mb-2 border border-slate-200 dark:border-slate-700">
+            <Image 
+              src="/images/product-template6.svg" 
+              alt="产品详情页样式6" 
+              width={320} 
+              height={180}
+              className="object-cover"
+            />
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">精致服装风格，包含颜色和尺寸选择以及详细的面料信息</p>
+        </TabsContent>
       </Tabs>
-      
-      <div className="mt-4">
-        <Button 
-          onClick={() => setIsOpen(false)} 
-          className="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400"
-        >
-          应用选择
-        </Button>
-      </div>
     </motion.div>
   )
 } 

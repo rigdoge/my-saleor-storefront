@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="320" height="180" fill="#F9FAFB"/>
+  
+  <!-- 左侧产品图片区域 -->
+  <rect x="20" y="40" width="120" height="120" rx="4" fill="#E5E7EB"/>
+  <rect x="30" y="50" width="60" height="60" rx="2" fill="#D1D5DB"/>
+  
+  <!-- 右侧产品信息区域 -->
+  <rect x="160" y="40" width="140" height="12" rx="2" fill="#4F46E5"/>
+  <rect x="160" y="60" width="80" height="8" rx="2" fill="#9CA3AF"/>
+  
+  <!-- 评分 -->
+  <rect x="160" y="80" width="80" height="6" rx="2" fill="#FCD34D"/>
+  
+  <!-- 颜色选择器 -->
+  <rect x="160" y="96" width="40" height="6" rx="2" fill="#9CA3AF"/>
+  <circle cx="170" cy="110" r="6" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2"/>
+  <circle cx="190" cy="110" r="6" fill="#E5E7EB"/>
+  <circle cx="210" cy="110" r="6" fill="#1F2937"/>
+  
+  <!-- 尺码选择器 -->
+  <rect x="160" y="126" width="40" height="6" rx="2" fill="#9CA3AF"/>
+  <rect x="160" y="138" width="30" height="10" rx="2" fill="#F3F4F6" stroke="#D1D5DB"/>
+  <rect x="200" y="138" width="30" height="10" rx="2" fill="#F3F4F6" stroke="#4F46E5"/>
+  <rect x="240" y="138" width="30" height="10" rx="2" fill="#F3F4F6" stroke="#D1D5DB"/>
+  
+  <!-- 购买按钮 -->
+  <rect x="160" y="158" width="140" height="12" rx="4" fill="#4F46E5"/>
+</svg> 

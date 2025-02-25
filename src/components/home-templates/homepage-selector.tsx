@@ -6,13 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
 
 export function HomepageSelector() {
   const { selectedHomepage, selectHomepage } = useHomepageSelection()
   const [isOpen, setIsOpen] = useState(false)
   
+  // 统一的选择处理函数
   const handleSelect = (value: string) => {
     selectHomepage(value as any)
+    setIsOpen(false) // 选择后自动关闭面板
   }
   
   if (!isOpen) {
@@ -43,51 +46,39 @@ export function HomepageSelector() {
       >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">选择首页布局</h2>
-          <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
-            关闭
+          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+            <X className="h-5 w-5" />
           </Button>
         </div>
         
-        <Tabs value={selectedHomepage} onValueChange={handleSelect} className="w-full">
-          <TabsList className="grid grid-cols-3 mb-8">
-            <TabsTrigger value="homepage1">默认版本</TabsTrigger>
-            <TabsTrigger value="homepage2">产品优先</TabsTrigger>
-            <TabsTrigger value="homepage3">分类优先</TabsTrigger>
-          </TabsList>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <HomepagePreview 
-              title="默认版本" 
-              description="简洁基础的首页布局，展示主要功能"
-              value="homepage1"
-              selected={selectedHomepage === 'homepage1'}
-              onChange={handleSelect}
-              image="/images/homepage1.jpg"
-            />
-            <HomepagePreview 
-              title="产品优先" 
-              description="突出展示产品，适合重点推广某些商品"
-              value="homepage2"
-              selected={selectedHomepage === 'homepage2'}
-              onChange={handleSelect}
-              image="/images/homepage2.jpg"
-            />
-            <HomepagePreview 
-              title="分类优先" 
-              description="重点展示分类，帮助用户快速导航"
-              value="homepage3"
-              selected={selectedHomepage === 'homepage3'}
-              onChange={handleSelect}
-              image="/images/homepage3.jpg"
-            />
-          </div>
-        </Tabs>
-        
-        <div className="flex justify-end mt-6">
-          <Button onClick={() => setIsOpen(false)}>
-            确认选择
-          </Button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <HomepagePreview 
+            title="默认版本" 
+            description="简洁基础的首页布局，展示主要功能"
+            value="homepage1"
+            selected={selectedHomepage === 'homepage1'}
+            onChange={handleSelect}
+            image="/images/homepage1.jpg"
+          />
+          <HomepagePreview 
+            title="产品优先" 
+            description="突出展示产品，适合重点推广某些商品"
+            value="homepage2"
+            selected={selectedHomepage === 'homepage2'}
+            onChange={handleSelect}
+            image="/images/homepage2.jpg"
+          />
+          <HomepagePreview 
+            title="分类优先" 
+            description="重点展示分类，帮助用户快速导航"
+            value="homepage3"
+            selected={selectedHomepage === 'homepage3'}
+            onChange={handleSelect}
+            image="/images/homepage3.jpg"
+          />
         </div>
+        
+        {/* 点击预览即可选择，无需额外的确认按钮 */}
       </motion.div>
     </motion.div>
   )

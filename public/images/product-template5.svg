@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="320" height="180" fill="#FFFFFF"/>
+  
+  <!-- 左侧产品信息区域 -->
+  <rect x="20" y="25" width="60" height="8" rx="2" fill="#9CA3AF"/>
+  <rect x="20" y="45" width="120" height="14" rx="2" fill="#111827"/>
+  
+  <!-- 价格和评分 -->
+  <rect x="20" y="70" width="40" height="10" rx="2" fill="#111827"/>
+  <rect x="70" y="70" width="70" height="8" rx="2" fill="#FBBF24"/>
+  
+  <!-- 产品描述 -->
+  <rect x="20" y="90" width="130" height="4" rx="1" fill="#6B7280"/>
+  <rect x="20" y="98" width="120" height="4" rx="1" fill="#6B7280"/>
+  <rect x="20" y="106" width="110" height="4" rx="1" fill="#6B7280"/>
+  
+  <!-- 库存状态 -->
+  <circle cx="25" cy="122" r="5" fill="#10B981"/>
+  <rect x="35" y="120" width="70" height="4" rx="1" fill="#10B981"/>
+  
+  <!-- 尺寸选择 -->
+  <rect x="20" y="135" width="20" height="6" rx="1" fill="#111827"/>
+  <rect x="20" y="145" width="60" height="30" rx="4" fill="#EFF6FF" stroke="#4F46E5"/>
+  <rect x="90" y="145" width="60" height="30" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+  
+  <!-- 添加到购物车按钮 -->
+  <rect x="20" y="185" width="130" height="12" rx="4" fill="#4F46E5"/>
+  
+  <!-- 右侧产品图片区域 -->
+  <rect x="170" y="35" width="130" height="150" rx="4" fill="#E5E7EB"/>
+  <path d="M220 110 L250 75 L270 110 L250 120 Z" fill="#D1D5DB"/>
+  <path d="M220 110 L190 75 L170 110 L190 120 Z" fill="#D1D5DB"/>
+</svg> 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="320" height="180" fill="#FFFFFF"/>
+  
+  <!-- 左侧产品图片区域 -->
+  <rect x="20" y="30" width="140" height="140" rx="2" fill="#E5E7EB"/>
+  <rect x="25" y="160" width="20" height="10" rx="1" fill="#F3F4F6"/>
+  <rect x="50" y="160" width="20" height="10" rx="1" fill="#F3F4F6"/>
+  <rect x="75" y="160" width="20" height="10" rx="1" fill="#F3F4F6"/>
+  
+  <!-- 右侧产品信息区域 -->
+  <!-- 产品标题和价格 -->
+  <rect x="180" y="30" width="80" height="10" rx="2" fill="#111827"/>
+  <rect x="280" y="30" width="20" height="10" rx="2" fill="#111827"/>
+  
+  <!-- 评分 -->
+  <rect x="180" y="50" width="15" height="6" rx="1" fill="#4B5563"/>
+  <rect x="200" y="50" width="60" height="6" rx="1" fill="#FCD34D"/>
+  <rect x="270" y="50" width="40" height="6" rx="1" fill="#4F46E5"/>
+  
+  <!-- 颜色选择 -->
+  <rect x="180" y="70" width="25" height="6" rx="1" fill="#4B5563"/>
+  <circle cx="190" cy="85" r="6" fill="#111827" stroke="#4F46E5" stroke-width="2"/>
+  <circle cx="210" cy="85" r="6" fill="#9CA3AF"/>
+  
+  <!-- 尺寸选择 -->
+  <rect x="180" y="100" width="20" height="6" rx="1" fill="#4B5563"/>
+  <rect x="260" y="100" width="40" height="6" rx="1" fill="#4F46E5"/>
+  <rect x="180" y="115" width="20" height="10" rx="2" fill="#F3F4F6" stroke="#D1D5DB"/>
+  <rect x="205" y="115" width="20" height="10" rx="2" fill="#F3F4F6" stroke="#D1D5DB"/>
+  <rect x="230" y="115" width="20" height="10" rx="2" fill="#4F46E5"/>
+  <rect x="255" y="115" width="20" height="10" rx="2" fill="#F3F4F6" stroke="#D1D5DB"/>
+  <rect x="280" y="115" width="20" height="10" rx="2" fill="#F3F4F6" stroke="#D1D5DB"/>
+  
+  <!-- Add to cart 按钮 -->
+  <rect x="180" y="135" width="120" height="12" rx="3" fill="#4F46E5"/>
+  
+  <!-- 产品描述和服务信息 -->
+  <rect x="180" y="155" width="120" height="4" rx="1" fill="#6B7280"/>
+  <rect x="180" y="163" width="120" height="4" rx="1" fill="#6B7280"/>
+  <rect x="180" y="171" width="120" height="4" rx="1" fill="#6B7280"/>
+</svg> 
