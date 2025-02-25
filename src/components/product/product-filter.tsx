@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { FilterX } from 'lucide-react'
@@ -13,15 +13,31 @@ interface ProductFilterProps {
 }
 
 export function ProductFilter({ minPrice = 0, maxPrice = 10000, totalCount }: ProductFilterProps) {
-  const { filters, updateParams } = useUrlParams({})
+  const { getParam, updateParams, searchParams } = useUrlParams()
+  
+  // 从URL参数中获取筛选条件
+  const filters = useMemo(() => {
+    return {
+      minPrice: getParam('minPrice'),
+      maxPrice: getParam('maxPrice'),
+      inStock: getParam('inStock'),
+      onSale: getParam('onSale')
+    }
+  }, [getParam, searchParams])
   
   // 清除所有筛选条件
   const clearAllFilters = () => {
-    updateParams({ filters: {}, page: 1 })
+    updateParams({
+      minPrice: null,
+      maxPrice: null,
+      inStock: null,
+      onSale: null,
+      page: null
+    })
   }
   
   // 检查是否有活动的筛选条件
-  const hasActiveFilters = Object.keys(filters).length > 0
+  const hasActiveFilters = Object.values(filters).some(value => value !== null)
   
   return (
     <div className="space-y-6">
@@ -63,11 +79,8 @@ export function ProductFilter({ minPrice = 0, maxPrice = 10000, totalCount }: Pr
                 value={filters.minPrice || ''}
                 onChange={(e) => {
                   updateParams({ 
-                    filters: { 
-                      ...filters, 
-                      minPrice: e.target.value 
-                    },
-                    page: 1
+                    minPrice: e.target.value || null,
+                    page: '1'
                   })
                 }}
               />
@@ -83,11 +96,8 @@ export function ProductFilter({ minPrice = 0, maxPrice = 10000, totalCount }: Pr
                 value={filters.maxPrice || ''}
                 onChange={(e) => {
                   updateParams({ 
-                    filters: { 
-                      ...filters, 
-                      maxPrice: e.target.value 
-                    },
-                    page: 1
+                    maxPrice: e.target.value || null,
+                    page: '1'
                   })
                 }}
               />
@@ -107,11 +117,8 @@ export function ProductFilter({ minPrice = 0, maxPrice = 10000, totalCount }: Pr
                 checked={filters.inStock === 'true'}
                 onChange={(e) => {
                   updateParams({ 
-                    filters: { 
-                      ...filters, 
-                      inStock: e.target.checked ? 'true' : undefined 
-                    },
-                    page: 1
+                    inStock: e.target.checked ? 'true' : null,
+                    page: '1'
                   })
                 }}
               />
@@ -124,11 +131,8 @@ export function ProductFilter({ minPrice = 0, maxPrice = 10000, totalCount }: Pr
                 checked={filters.onSale === 'true'}
                 onChange={(e) => {
                   updateParams({ 
-                    filters: { 
-                      ...filters, 
-                      onSale: e.target.checked ? 'true' : undefined 
-                    },
-                    page: 1
+                    onSale: e.target.checked ? 'true' : null,
+                    page: '1'
                   })
                 }}
               />
