@@ -1,11 +1,5 @@
-import {
-  Loader2,
-  LucideProps,
-  Moon,
-  SunMedium,
-  Twitter,
-  type Icon as LucideIcon,
-} from "lucide-react"
+import { Loader2, LucideProps, Moon, SunMedium, Twitter, LucideIcon, Mail, Lock, Facebook, } from "lucide-react"
+import { FcGoogle } from "react-icons/fc"
 
 export type Icon = LucideIcon
 
@@ -14,4 +8,8 @@ export const Icons = {
   moon: Moon,
   twitter: Twitter,
   spinner: Loader2,
-} as const 
+  mail: Mail,
+  lock: Lock,
+  facebook: Facebook,
+  google: FcGoogle,
+} as const

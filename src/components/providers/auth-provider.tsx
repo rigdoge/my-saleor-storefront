@@ -151,8 +151,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         token,
         loading: isLoading,
         error,
-        login: loginMutation.mutateAsync,
-        register: registerMutation.mutateAsync,
+        login: async (input: LoginInput) => {
+          await loginMutation.mutateAsync(input);
+        },
+        register: async (input: RegisterInput) => {
+          await registerMutation.mutateAsync(input);
+        },
         logout,
       }}
     >

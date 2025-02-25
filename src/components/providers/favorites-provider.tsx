@@ -1,7 +1,8 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext } from "react"
 import { useToast } from "@/components/ui/use-toast"
+import { useLocalStorage } from "@/lib/hooks/use-local-storage"
 
 interface FavoriteProduct {
   id: string
@@ -23,21 +24,10 @@ interface FavoritesContextType {
 const FavoritesContext = createContext<FavoritesContextType | null>(null)
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
-  const [favorites, setFavorites] = useState<FavoriteProduct[]>([])
+  const [favorites, setFavorites] = useLocalStorage<FavoriteProduct[]>("favorites", [], {
+    onError: (error) => console.error('Failed to handle favorites data:', error)
+  })
   const { toast } = useToast()
-
-  // 从本地存储加载收藏数据
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem("favorites")
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites))
-    }
-  }, [])
-
-  // 保存收藏数据到本地存储
-  useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites))
-  }, [favorites])
 
   const addToFavorites = (product: FavoriteProduct) => {
     if (!favorites.some(f => f.id === product.id)) {

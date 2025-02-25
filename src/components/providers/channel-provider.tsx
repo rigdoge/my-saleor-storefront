@@ -69,7 +69,7 @@ export function ChannelProvider({
       }
     },
     staleTime: 1000 * 60 * 5, // 5分钟内数据不会重新获取
-    cacheTime: 1000 * 60 * 30, // 缓存30分钟
+    gcTime: 1000 * 60 * 30, // 缓存30分钟
   })
 
   if (isLoading) {

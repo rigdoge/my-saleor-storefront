@@ -18,4 +18,4 @@ export function Providers({ children }: { children: ReactNode }) {
       <ThemeProvider>{children}</ThemeProvider>
     </QueryClientProvider>
   )
-} 
+}
