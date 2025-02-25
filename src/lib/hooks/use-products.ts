@@ -142,8 +142,8 @@ export function useProducts({
       });
       
       setProducts(prev => isLoadMore ? [...prev, ...newProducts] : newProducts)
-      setTotalCount(productsData.totalCount || newProducts.length)
-      setHasMore(productsData.pageInfo?.hasNextPage || false)
+      setTotalCount(productsData?.totalCount || newProducts.length)
+      setHasMore(productsData?.pageInfo?.hasNextPage || false)
       setError(null)
     } catch (err) {
       console.error('获取产品失败:', err)
