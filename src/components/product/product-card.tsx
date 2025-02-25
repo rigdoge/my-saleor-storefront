@@ -126,7 +126,13 @@ function ProductCardComponent({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-muted">
-              <span className="text-muted-foreground">无图片</span>
+              <Image
+                src="/images/placeholder.svg"
+                alt="产品图片占位符"
+                width={200}
+                height={200}
+                className="h-auto w-auto max-w-full"
+              />
             </div>
           )}
           
