@@ -359,6 +359,11 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
   const filter: ProductFilterInput = {}
   const sort = params.sort
   
+  // 搜索关键词
+  if (params.search) {
+    filter.search = params.search
+  }
+  
   // 价格范围
   const minPrice = params.minPrice
   const maxPrice = params.maxPrice
