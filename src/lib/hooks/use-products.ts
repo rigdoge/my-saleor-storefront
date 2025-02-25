@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Product } from '@/lib/types'
 import { graphqlRequestClient } from '@/lib/graphql/client'
 import { GET_PRODUCTS } from '@/lib/graphql/queries/products'
@@ -29,22 +29,36 @@ export function useProducts({
   
   // 从URL获取筛选参数
   const { 
-    filters: urlFilters, 
-    sort, 
-    search,
-    page,
-    updateParams
-  } = useUrlParams({
-    initialFilters,
-    initialSort,
-    initialSearch
-  })
+    getParam,
+    getArrayParam,
+    updateParams,
+    searchParams
+  } = useUrlParams()
+  
+  // 从URL参数中获取筛选条件
+  const urlFilters = useMemo(() => {
+    return {
+      minPrice: getParam('minPrice'),
+      maxPrice: getParam('maxPrice'),
+      inStock: getParam('inStock'),
+      onSale: getParam('onSale'),
+      category: getParam('category'),
+      attributes: getParam('attributes') ? JSON.parse(getParam('attributes') || '{}') : undefined
+    }
+  }, [getParam, searchParams])
+  
+  // 获取排序、搜索和分页参数
+  const sort = getParam('sort') || initialSort
+  const search = getParam('search') || initialSearch
+  const page = getParam('page') ? parseInt(getParam('page') || '1', 10) : 1
   
   // 合并所有筛选条件
-  const filters = {
-    ...urlFilters,
-    ...(categorySlug ? { category: categorySlug } : {})
-  }
+  const filters = useMemo(() => {
+    return {
+      ...urlFilters,
+      ...(categorySlug ? { category: categorySlug } : {})
+    }
+  }, [urlFilters, categorySlug])
   
   // 获取产品数据
   const fetchProducts = async (isLoadMore = false) => {
@@ -140,7 +154,7 @@ export function useProducts({
   
   // 加载更多产品
   const loadMore = () => {
-    updateParams({ page: (page || 1) + 1 })
+    updateParams({ page: String(page + 1) })
   }
   
   // 当筛选条件、排序或搜索变化时重新获取数据
@@ -159,13 +173,28 @@ export function useProducts({
     sort,
     search,
     updateFilters: (newFilters: Record<string, string | string[]>) => {
-      updateParams({ filters: newFilters, page: 1 })
+      const updates: Record<string, string | null> = {}
+      
+      // 将新的筛选条件转换为URL参数
+      Object.entries(newFilters).forEach(([key, value]) => {
+        if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
+          updates[key] = null
+        } else if (key === 'attributes') {
+          updates[key] = JSON.stringify(value)
+        } else {
+          updates[key] = String(value)
+        }
+      })
+      
+      updates.page = '1' // 重置页码
+      
+      updateParams(updates)
     },
     updateSort: (newSort: string) => {
-      updateParams({ sort: newSort, page: 1 })
+      updateParams({ sort: newSort, page: '1' })
     },
     updateSearch: (newSearch: string) => {
-      updateParams({ search: newSearch, page: 1 })
+      updateParams({ search: newSearch, page: '1' })
     }
   }
 } 
