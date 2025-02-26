@@ -29,7 +29,7 @@ export function ProductTemplate3({
   
   if (!product) return null
 
-  // 转换GraphQL返回的attributes为ProductDetails组件期望的格式
+  // Convert GraphQL returned attributes to the format expected by ProductDetails component
   const productDetails = {
     description: product.description || '',
     attributes: product.attributes || [],
@@ -37,16 +37,16 @@ export function ProductTemplate3({
     category: product.category || { name: '' }
   }
 
-  // 品牌名称
-  const brandName = product.metadata?.find((m: { key: string; value: string }) => m.key === 'brand')?.value || '精品品牌'
+  // Brand name
+  const brandName = product.metadata?.find((m: { key: string; value: string }) => m.key === 'brand')?.value || 'Premium Brand'
 
   return (
     <div className="bg-black text-white min-h-screen relative">
-      {/* 顶部全宽图片 */}
+      {/* Full-width top image */}
       <div className="w-full h-[60vh] relative">
         <Image 
           src={product.media && product.media[0] ? product.media[0].url : '/placeholder.jpg'} 
-          alt={product.name || '产品图片'}
+          alt={product.name || 'Product Image'}
           fill
           className="object-cover opacity-60"
           priority
@@ -54,18 +54,18 @@ export function ProductTemplate3({
         
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black" />
         
-        {/* 导航栏 */}
+        {/* Navigation bar */}
         <div className="absolute top-0 left-0 w-full z-10">
           <div className="container mx-auto px-6 py-6 flex items-center justify-between">
             <Link href="/products" className="flex items-center text-white hover:text-gold-400 transition-colors">
               <ArrowLeft className="h-5 w-5 mr-2" />
-              <span className="font-medium">返回</span>
+              <span className="font-medium">Back</span>
             </Link>
             
             <div className="flex items-center gap-6">
               <Button variant="ghost" size="sm" className="text-white hover:text-gold-400 hover:bg-transparent">
                 <Share2 className="h-5 w-5 mr-2" />
-                分享
+                Share
               </Button>
               <Button 
                 variant="ghost" 
@@ -74,13 +74,13 @@ export function ProductTemplate3({
                 onClick={onToggleFavorite}
               >
                 <Heart className={`${isFavorite ? "fill-gold-500 text-gold-500" : ""} h-5 w-5 mr-2`} />
-                收藏
+                Favorite
               </Button>
             </div>
           </div>
         </div>
         
-        {/* 居中产品标题 */}
+        {/* Centered product title */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -97,10 +97,10 @@ export function ProductTemplate3({
         </div>
       </div>
       
-      {/* 主要内容区 */}
+      {/* Main content area */}
       <div className="container mx-auto px-6 pb-20">
         <div className="grid lg:grid-cols-2 gap-16 -mt-32 relative z-10">
-          {/* 左侧：产品画廊 */}
+          {/* Left: Product gallery */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -110,14 +110,14 @@ export function ProductTemplate3({
             <ProductGallery media={product.media || []} />
           </motion.div>
           
-          {/* 右侧：产品信息 */}
+          {/* Right: Product information */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col justify-center"
           >
-            {/* 价格信息 */}
+            {/* Price information */}
             <div className="mb-10">
               {selectedVariant?.pricing?.discount?.gross ? (
                 <div className="flex items-center gap-4">
@@ -131,7 +131,7 @@ export function ProductTemplate3({
                     )}
                   </span>
                   <Badge className="bg-gold-500 hover:bg-gold-600 text-black font-medium ml-2">
-                    限时优惠
+                    Limited Time Offer
                   </Badge>
                 </div>
               ) : selectedVariant?.pricing?.price?.gross ? (
@@ -139,16 +139,16 @@ export function ProductTemplate3({
                   {formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)}
                 </span>
               ) : (
-                <span className="text-4xl font-bold text-white">价格待定</span>
+                <span className="text-4xl font-bold text-white">Price TBD</span>
               )}
             </div>
             
-            {/* 产品选项 */}
+            {/* Product options */}
             <div className="space-y-8">
-              {/* 规格选择 */}
+              {/* Variant selection */}
               {product.variants && product.variants.length > 0 && (
                 <div>
-                  <h3 className="font-semibold mb-4 text-xl border-b border-slate-700 pb-2">选择规格</h3>
+                  <h3 className="font-semibold mb-4 text-xl border-b border-slate-700 pb-2">Select Variant</h3>
                   <ProductVariants
                     variants={product.variants}
                     selectedVariant={selectedVariant}
@@ -157,9 +157,9 @@ export function ProductTemplate3({
                 </div>
               )}
 
-              {/* 数量选择 */}
+              {/* Quantity selection */}
               <div>
-                <h3 className="font-semibold mb-4 text-xl border-b border-slate-700 pb-2">数量</h3>
+                <h3 className="font-semibold mb-4 text-xl border-b border-slate-700 pb-2">Quantity</h3>
                 <div className="flex items-center">
                   <Button
                     variant="outline"
@@ -184,37 +184,37 @@ export function ProductTemplate3({
                   {selectedVariant && (
                     <span className="ml-6 text-base">
                       {selectedVariant.quantityAvailable > 10 
-                        ? <span className="text-green-400">现货供应</span>
+                        ? <span className="text-green-400">In Stock</span>
                         : selectedVariant.quantityAvailable > 0 
-                          ? <span className="text-amber-400">库存有限</span> 
-                          : <span className="text-red-400">暂无库存</span>}
+                          ? <span className="text-amber-400">Limited Stock</span> 
+                          : <span className="text-red-400">Out of Stock</span>}
                     </span>
                   )}
                 </div>
               </div>
               
-              {/* 购买按钮 */}
+              {/* Purchase buttons */}
               <div className="flex flex-col gap-4 pt-6">
                 <Button
                   className="h-16 bg-gold-500 hover:bg-gold-600 text-black text-lg font-semibold"
                   disabled={isAddingToCart || !selectedVariant || selectedVariant.quantityAvailable <= 0}
                   onClick={onAddToCart}
                 >
-                  {isAddingToCart ? "添加中..." : "加入购物车"}
+                  {isAddingToCart ? "Adding..." : "Add to Cart"}
                 </Button>
                 <Button
                   variant="outline"
                   className="h-16 border-gold-500/50 text-gold-500 hover:bg-gold-500/10 hover:text-gold-400 text-lg font-semibold"
                 >
-                  立即购买
+                  Buy Now
                 </Button>
               </div>
               
-              {/* 产品信息手风琴 */}
+              {/* Product information accordion */}
               <div className="mt-10">
                 <Accordion type="single" collapsible className="border-t border-slate-800">
                   <AccordionItem value="description" className="border-b border-slate-800 py-2">
-                    <AccordionTrigger className="text-lg font-medium hover:text-gold-400">产品描述</AccordionTrigger>
+                    <AccordionTrigger className="text-lg font-medium hover:text-gold-400">Product Description</AccordionTrigger>
                     <AccordionContent>
                       <div className="prose prose-invert max-w-none text-slate-300 pt-4">
                         <div dangerouslySetInnerHTML={{ __html: productDetails.description }} />
@@ -223,7 +223,7 @@ export function ProductTemplate3({
                   </AccordionItem>
                   
                   <AccordionItem value="specifications" className="border-b border-slate-800 py-2">
-                    <AccordionTrigger className="text-lg font-medium hover:text-gold-400">规格参数</AccordionTrigger>
+                    <AccordionTrigger className="text-lg font-medium hover:text-gold-400">Specifications</AccordionTrigger>
                     <AccordionContent>
                       <div className="grid gap-4 pt-4">
                         {productDetails.attributes.map((attr: { attribute: { slug: string; name: string }; values: { name: string }[] }, index: number) => (
@@ -239,20 +239,20 @@ export function ProductTemplate3({
                   </AccordionItem>
                   
                   <AccordionItem value="shipping" className="border-b border-slate-800 py-2">
-                    <AccordionTrigger className="text-lg font-medium hover:text-gold-400">配送与退货</AccordionTrigger>
+                    <AccordionTrigger className="text-lg font-medium hover:text-gold-400">Shipping & Returns</AccordionTrigger>
                     <AccordionContent>
                       <ul className="space-y-3 pt-4 text-slate-300">
                         <li className="flex items-start gap-2">
                           <Info className="h-5 w-5 text-gold-400 mt-0.5 flex-shrink-0" />
-                          <span>标准配送：1-3个工作日送达</span>
+                          <span>Standard Shipping: Delivered in 1-3 business days</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Info className="h-5 w-5 text-gold-400 mt-0.5 flex-shrink-0" />
-                          <span>部分地区支持次日达服务</span>
+                          <span>Free shipping on orders over $100</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Info className="h-5 w-5 text-gold-400 mt-0.5 flex-shrink-0" />
-                          <span>7天内无理由退货，15天内产品质量问题免费换货</span>
+                          <span>30-day returns for unworn items</span>
                         </li>
                       </ul>
                     </AccordionContent>
@@ -263,7 +263,7 @@ export function ProductTemplate3({
           </motion.div>
         </div>
         
-        {/* 品牌故事区域 */}
+        {/* Brand story area */}
         <div className="mt-32 text-center max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -272,23 +272,23 @@ export function ProductTemplate3({
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <h2 className="text-gold-400 uppercase tracking-widest text-sm">品牌故事</h2>
+            <h2 className="text-gold-400 uppercase tracking-widest text-sm">Brand Story</h2>
             <h3 className="text-4xl font-bold">{brandName}</h3>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              品质与艺术的完美结合，{brandName}源于对卓越的不懈追求。我们的设计师将传统工艺与现代美学相融合，创造出兼具功能性与艺术性的精品。每一件产品都蕴含着匠人精神和对细节的极致关注。
+              Quality and artistry come together in {brandName}, a brand that has been pursuing excellence for years. Our designers blend traditional craftsmanship with modern aesthetics, creating functional and artistic masterpieces. Each product is a reflection of the artisan spirit and meticulous attention to detail.
             </p>
             
             <div className="pt-10">
               <Button variant="outline" className="border-gold-500/50 text-gold-500 hover:bg-gold-500/10 hover:text-gold-400">
-                了解更多
+                Learn More
               </Button>
             </div>
           </motion.div>
         </div>
         
-        {/* 推荐产品区域（占位） */}
+        {/* Recommended product area (placeholder) */}
         <div className="mt-32">
-          <h2 className="text-3xl font-bold mb-10 text-center">相关推荐</h2>
+          <h2 className="text-3xl font-bold mb-10 text-center">Related Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((item) => (
               <motion.div 
@@ -301,12 +301,12 @@ export function ProductTemplate3({
               >
                 <AspectRatio ratio={1}>
                   <div className="h-full w-full bg-slate-800 flex items-center justify-center text-slate-600">
-                    产品图片占位符
+                    Product Image Placeholder
                   </div>
                 </AspectRatio>
                 <div className="p-4">
-                  <h3 className="font-medium mb-1">推荐产品 {item}</h3>
-                  <p className="text-slate-400 text-sm mb-2">产品描述</p>
+                  <h3 className="font-medium mb-1">Recommended Product {item}</h3>
+                  <p className="text-slate-400 text-sm mb-2">Product Description</p>
                   <p className="font-semibold text-gold-400">¥1,299.00</p>
                 </div>
               </motion.div>
@@ -315,14 +315,14 @@ export function ProductTemplate3({
         </div>
       </div>
       
-      {/* 页脚 */}
+      {/* Footer */}
       <footer className="bg-slate-900 py-10 mt-20">
         <div className="container mx-auto px-6 text-center text-slate-400">
-          <p>© 2023 {brandName}. 保留所有权利。</p>
+          <p>© 2023 {brandName}. All rights reserved.</p>
         </div>
       </footer>
       
-      {/* 规格弹窗 */}
+      {/* Specifications modal */}
       <AnimatePresence>
         {showSpecs && (
           <motion.div
@@ -340,9 +340,9 @@ export function ProductTemplate3({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">产品规格</h2>
+                <h2 className="text-xl font-bold">Product Specifications</h2>
                 <Button variant="ghost" size="sm" onClick={() => setShowSpecs(false)}>
-                  关闭
+                  Close
                 </Button>
               </div>
               

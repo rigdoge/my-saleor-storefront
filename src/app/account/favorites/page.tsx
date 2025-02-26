@@ -10,7 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
-import { Heart, ShoppingBag } from "lucide-react"
+import { Heart, ShoppingBag, ShoppingCart, Loader2 } from "lucide-react"
 
 function FavoritesLoading() {
   return (
@@ -35,12 +35,12 @@ function EmptyFavorites() {
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center">
       <Heart className="h-12 w-12 text-muted-foreground" />
-      <h3 className="mt-4 text-lg font-medium">收藏夹是空的</h3>
+      <h3 className="mt-4 text-lg font-medium">Your Favorites is Empty</h3>
       <p className="mt-2 text-sm text-muted-foreground">
-        浏览商品并添加到收藏夹
+        Browse products and add them to your favorites
       </p>
       <Button asChild className="mt-4">
-        <Link href="/products">去购物</Link>
+        <Link href="/products">Go Shopping</Link>
       </Button>
     </div>
   )
@@ -74,9 +74,9 @@ export default function FavoritesPage() {
       <div className="container py-10">
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">我的收藏</h2>
+            <h2 className="text-2xl font-bold tracking-tight">My Favorites</h2>
             <p className="text-muted-foreground">
-              管理您收藏的商品
+              Manage your favorite products
             </p>
           </div>
 
@@ -112,18 +112,15 @@ export default function FavoritesPage() {
                     </p>
                   </CardHeader>
                   <CardFooter className="flex gap-2">
-                    <Button className="flex-1">
-                      <ShoppingBag className="mr-2 h-4 w-4" />
-                      加入购物车
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full gap-1"
                       onClick={() => removeMutation.mutate(product.id)}
                       disabled={removeMutation.isPending}
                     >
                       <Heart className="h-4 w-4 fill-current" />
-                      <span className="sr-only">从收藏夹移除</span>
+                      <span className="sr-only">Remove from favorites</span>
                     </Button>
                   </CardFooter>
                 </Card>

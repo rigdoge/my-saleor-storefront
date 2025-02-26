@@ -20,7 +20,7 @@ export function ProductTemplate5({
 }: ProductTemplateProps) {
   if (!product) return null
 
-  // 转换GraphQL返回的attributes为ProductDetails组件期望的格式
+  // Convert GraphQL returned attributes to the format expected by ProductDetails component
   const productDetails = {
     description: product.description || '',
     attributes: product.attributes || [],
@@ -28,13 +28,13 @@ export function ProductTemplate5({
     category: product.category || { name: '' }
   }
 
-  // 获取分类信息，如果没有使用默认值
+  // Get category information, use default if not available
   const categoryName = product.category?.name || 'Travel'
   const subCategoryName = productDetails.metadata.find((m: any) => m.key === 'subCategory')?.value || 'Bags'
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* 面包屑导航 */}
+      {/* Breadcrumb navigation */}
       <div className="mb-8 text-sm flex gap-2">
         <span className="text-gray-500">{categoryName}</span>
         <span className="text-gray-500">/</span>
@@ -42,12 +42,12 @@ export function ProductTemplate5({
       </div>
 
       <div className="grid md:grid-cols-2 gap-12">
-        {/* 左侧：产品信息区 */}
+        {/* Left: Product information area */}
         <div className="flex flex-col">
-          {/* 产品标题 */}
+          {/* Product title */}
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
           
-          {/* 价格 */}
+          {/* Price */}
           <div className="flex items-center gap-6 mb-6">
             <span className="text-2xl font-medium text-gray-900">
               {selectedVariant?.pricing?.price?.gross 
@@ -55,7 +55,7 @@ export function ProductTemplate5({
                 : "$220"}
             </span>
             
-            {/* 评分 */}
+            {/* Ratings */}
             <div className="flex items-center">
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((_, i) => (
@@ -78,18 +78,18 @@ export function ProductTemplate5({
             </div>
           </div>
           
-          {/* 产品描述 */}
+          {/* Product description */}
           <p className="text-gray-600 mb-8">
             {product.description || "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure."}
           </p>
           
-          {/* 库存状态 */}
+          {/* Stock status */}
           <div className="flex items-center gap-2 text-green-600 mb-8">
             <Check className="h-5 w-5" />
             <span>In stock and ready to ship</span>
           </div>
           
-          {/* 尺寸选择 */}
+          {/* Size selection */}
           <div className="mb-8">
             <h3 className="font-medium mb-4">Size</h3>
             <div className="grid grid-cols-2 gap-4">
@@ -104,13 +104,13 @@ export function ProductTemplate5({
             </div>
           </div>
           
-          {/* 尺寸指南链接 */}
+          {/* Size guide link */}
           <div className="flex items-center gap-1 text-sm mb-8">
             <HelpCircle className="h-4 w-4 text-gray-400" />
             <a href="#" className="text-gray-500 hover:text-gray-700">What size should I buy?</a>
           </div>
           
-          {/* 添加到购物车按钮 */}
+          {/* Add to bag button */}
           <Button
             className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 rounded-md"
             onClick={onAddToCart}
@@ -119,14 +119,14 @@ export function ProductTemplate5({
             Add to bag
           </Button>
           
-          {/* 保证信息 */}
+          {/* Guarantee information */}
           <div className="flex items-center gap-2 mt-6 justify-center text-gray-500">
             <Shield className="h-5 w-5" />
             <span>Lifetime Guarantee</span>
           </div>
         </div>
 
-        {/* 右侧：产品图片区 */}
+        {/* Right: Product image area */}
         <div>
           <ProductGallery media={product.media || []} />
         </div>

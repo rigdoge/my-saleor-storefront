@@ -7,34 +7,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { Package, Heart, Settings, CreditCard } from "lucide-react"
+import { useState } from "react"
 
 export default function AccountPage() {
   const { user } = useAuth()
+  // Define orders with empty array as default value
+  const [orders] = useState<any[]>([])
 
   return (
     <RequireAuth>
       <div className="container py-10">
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">个人中心</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Account Center</h2>
             <p className="text-muted-foreground">
-              管理您的账户信息和订单
+              Manage your account information and orders
             </p>
           </div>
 
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
-              <TabsTrigger value="overview">概览</TabsTrigger>
-              <TabsTrigger value="orders">订单</TabsTrigger>
-              <TabsTrigger value="favorites">收藏</TabsTrigger>
-              <TabsTrigger value="settings">设置</TabsTrigger>
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
+              <TabsTrigger value="favorites">Favorites</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      待处理订单
+                      Pending Orders
                     </CardTitle>
                     <Package className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
@@ -45,7 +48,7 @@ export default function AccountPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      收藏商品
+                      Favorite Items
                     </CardTitle>
                     <Heart className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
@@ -56,7 +59,7 @@ export default function AccountPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      支付方式
+                      Payment Methods
                     </CardTitle>
                     <CreditCard className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
@@ -67,7 +70,7 @@ export default function AccountPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      账户设置
+                      Account Settings
                     </CardTitle>
                     <Settings className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
@@ -81,40 +84,46 @@ export default function AccountPage() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <Card className="col-span-4">
                   <CardHeader>
-                    <CardTitle>最近订单</CardTitle>
+                    <CardTitle>Recent Orders</CardTitle>
                     <CardDescription>
-                      您最近的3个订单
+                      Your 3 most recent orders
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center py-10 text-muted-foreground">
-                      暂无订单
-                    </div>
+                    {!orders || orders.length === 0 ? (
+                      <div className="py-4 text-center text-sm text-muted-foreground">
+                        No Orders
+                      </div>
+                    ) : (
+                      <div>
+                        {/* Order list would go here */}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
                 <Card className="col-span-3">
                   <CardHeader>
-                    <CardTitle>账户信息</CardTitle>
+                    <CardTitle>Account Information</CardTitle>
                     <CardDescription>
-                      您的个人信息
+                      Your personal information
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">邮箱</p>
+                      <p className="text-sm font-medium">Email</p>
                       <p className="text-sm text-muted-foreground">
                         {user?.email}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">姓名</p>
+                      <p className="text-sm font-medium">Name</p>
                       <p className="text-sm text-muted-foreground">
                         {user?.firstName} {user?.lastName}
                       </p>
                     </div>
                     <Button asChild>
                       <Link href="/account/settings">
-                        编辑信息
+                        Edit Information
                       </Link>
                     </Button>
                   </CardContent>

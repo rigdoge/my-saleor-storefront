@@ -29,7 +29,7 @@ export function Header() {
           <div className="flex gap-6 md:gap-10">
             <Link href="/" className="items-center space-x-2 flex">
               <span className="font-bold">
-                Saleor商城
+                Saleor Store
               </span>
             </Link>
             <nav className="hidden gap-6 md:flex">
@@ -37,19 +37,19 @@ export function Header() {
                 href="/categories"
                 className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 text-foreground/60"
               >
-                分类
+                Categories
               </Link>
               <Link
                 href="/products"
                 className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 text-foreground/60"
               >
-                商品
+                Products
               </Link>
               <Link
                 href="/about"
                 className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 text-foreground/60"
               >
-                关于
+                About
               </Link>
             </nav>
           </div>
@@ -61,7 +61,7 @@ export function Header() {
                 onClick={() => setIsSearchOpen(true)}
               >
                 <Search className="mr-2 h-4 w-4" />
-                <span>搜索商品...</span>
+                <span>Search products...</span>
                 <kbd className="pointer-events-none absolute right-2 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 sm:flex">
                   <span className="text-xs">⌘</span>K
                 </kbd>
@@ -71,12 +71,12 @@ export function Header() {
               <nav className="flex items-center space-x-2">
                 <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(true)}>
                   <Search className="h-5 w-5" />
-                  <span className="sr-only">搜索</span>
+                  <span className="sr-only">Search</span>
                 </Button>
                 <Button variant="ghost" size="icon" asChild>
                   <Link href="/account/favorites">
                     <Heart className="h-5 w-5" />
-                    <span className="sr-only">收藏夹</span>
+                    <span className="sr-only">Favorites</span>
                   </Link>
                 </Button>
                 <CartButton />
@@ -85,7 +85,7 @@ export function Header() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <User className="h-5 w-5" />
-                        <span className="sr-only">用户菜单</span>
+                        <span className="sr-only">User menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -94,13 +94,13 @@ export function Header() {
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href="/account">个人中心</Link>
+                        <Link href="/account">Account Center</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/account/orders">我的订单</Link>
+                        <Link href="/account/orders">My Orders</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/account/favorites">我的收藏</Link>
+                        <Link href="/account/favorites">My Favorites</Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
@@ -108,7 +108,7 @@ export function Header() {
                         onClick={() => logout()}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
-                        <span>退出登录</span>
+                        <span>Log Out</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -116,7 +116,7 @@ export function Header() {
                   <Button variant="ghost" size="icon" asChild>
                     <Link href="/login">
                       <User className="h-5 w-5" />
-                      <span className="sr-only">登录</span>
+                      <span className="sr-only">Login</span>
                     </Link>
                   </Button>
                 )}

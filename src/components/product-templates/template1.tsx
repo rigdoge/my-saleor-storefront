@@ -45,17 +45,17 @@ export function ProductTemplate1({
         </div>
 
         <div className="flex flex-col">
-          {/* 产品标题和类别 */}
+          {/* Product title and category */}
           <div className="mb-4">
             <h1 className="text-2xl md:text-3xl font-semibold mb-2">{product.name}</h1>
             <div className="flex items-center text-sm text-slate-500 dark:text-slate-400">
               {product.category && (
-                <span>分类: {product.category.name}</span>
+                <span>Category: {product.category.name}</span>
               )}
             </div>
           </div>
           
-          {/* 价格 */}
+          {/* Price */}
           <div className="mb-6">
             {selectedVariant?.pricing?.discount?.gross ? (
               <div className="flex items-center gap-2">
@@ -69,7 +69,7 @@ export function ProductTemplate1({
                   )}
                 </span>
                 <Badge className="bg-red-500 hover:bg-red-600">
-                  {Math.round((1 - selectedVariant.pricing.price.gross.amount / selectedVariant.pricing.undiscountedPrice.gross.amount) * 100)}% 优惠
+                  {Math.round((1 - selectedVariant.pricing.price.gross.amount / selectedVariant.pricing.undiscountedPrice.gross.amount) * 100)}% Off
                 </Badge>
               </div>
             ) : selectedVariant?.pricing?.price?.gross ? (
@@ -77,14 +77,14 @@ export function ProductTemplate1({
                 {formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)}
               </span>
             ) : (
-              <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">价格待定</span>
+              <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Price TBD</span>
             )}
           </div>
 
-          {/* 规格选择 */}
+          {/* Variant selection */}
           {product.variants && product.variants.length > 0 && (
             <div className="mb-6">
-              <h3 className="font-medium mb-3">选择规格</h3>
+              <h3 className="font-medium mb-3">Select Variant</h3>
               <ProductVariants
                 variants={product.variants}
                 selectedVariant={selectedVariant}
@@ -93,9 +93,9 @@ export function ProductTemplate1({
             </div>
           )}
 
-          {/* 数量选择 */}
+          {/* Quantity selection */}
           <div className="mb-6">
-            <h3 className="font-medium mb-3">数量</h3>
+            <h3 className="font-medium mb-3">Quantity</h3>
             <div className="flex items-center">
               <Button
                 variant="outline"
@@ -118,21 +118,21 @@ export function ProductTemplate1({
               {selectedVariant && (
                 <span className="ml-4 text-sm text-slate-500">
                   {selectedVariant.quantityAvailable > 0 
-                    ? `库存: ${selectedVariant.quantityAvailable}` 
-                    : '缺货'}
+                    ? `Stock: ${selectedVariant.quantityAvailable}` 
+                    : 'Out of stock'}
                 </span>
               )}
             </div>
           </div>
 
-          {/* 行动按钮 */}
+          {/* Action buttons */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
             <Button
               className="md:col-span-3 h-12 bg-indigo-600 hover:bg-indigo-700"
               disabled={isAddingToCart || !selectedVariant || selectedVariant.quantityAvailable <= 0}
               onClick={onAddToCart}
             >
-              {isAddingToCart ? "添加中..." : "加入购物车"}
+              {isAddingToCart ? "Adding..." : "Add to Cart"}
             </Button>
             <Button
               variant="outline"
@@ -145,7 +145,7 @@ export function ProductTemplate1({
 
           <Separator className="my-4" />
 
-          {/* 服务信息 */}
+          {/* Service information */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="flex items-start space-x-2">
               <div className="p-2 rounded-full bg-slate-100 dark:bg-slate-800">
@@ -154,8 +154,8 @@ export function ProductTemplate1({
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-sm">免费配送</p>
-                <p className="text-xs text-slate-500">满99元包邮</p>
+                <p className="font-medium text-sm">Free Shipping</p>
+                <p className="text-xs text-slate-500">Free shipping on orders over $99</p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
@@ -165,8 +165,8 @@ export function ProductTemplate1({
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-sm">正品保证</p>
-                <p className="text-xs text-slate-500">官方授权渠道</p>
+                <p className="font-medium text-sm">Authentic Products</p>
+                <p className="text-xs text-slate-500">Official authorized retailer</p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
@@ -176,8 +176,8 @@ export function ProductTemplate1({
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-sm">7天无理由退货</p>
-                <p className="text-xs text-slate-500">满意为止</p>
+                <p className="font-medium text-sm">7-Day Returns</p>
+                <p className="text-xs text-slate-500">Satisfaction guaranteed</p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
@@ -187,17 +187,17 @@ export function ProductTemplate1({
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-sm">售后无忧</p>
-                <p className="text-xs text-slate-500">专业客服团队</p>
+                <p className="font-medium text-sm">Worry-Free After-Sales</p>
+                <p className="text-xs text-slate-500">Professional customer service</p>
               </div>
             </div>
           </div>
 
-          {/* 分享按钮 */}
+          {/* Share button */}
           <div className="flex items-center text-sm text-slate-500 mb-8">
             <Button variant="ghost" size="sm" className="flex items-center gap-1">
               <Share2 className="h-4 w-4" />
-              分享
+              Share
             </Button>
           </div>
         </div>

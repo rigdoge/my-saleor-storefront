@@ -36,13 +36,13 @@ export default function CategoriesPage() {
           channel: currentChannel.slug
         })
         
-        // 验证返回的数据结构
+        // Validate returned data structure
         if (!response || !response.categories || !response.categories.edges) {
           console.error('Invalid categories data structure:', response)
           return []
         }
         
-        // 处理并验证每个分类数据
+        // Process and validate each category data
         return response.categories.edges.map((edge: any) => {
           if (!edge || !edge.node) {
             console.warn('Invalid category edge:', edge)
@@ -51,7 +51,7 @@ export default function CategoriesPage() {
           
           const category = edge.node
           
-          // 确保子分类数据结构正确
+          // Ensure subcategory data structure is correct
           if (category.children && category.children.edges) {
             category.children.edges = category.children.edges.filter((childEdge: any) => 
               childEdge && childEdge.node && childEdge.node.id
@@ -59,20 +59,20 @@ export default function CategoriesPage() {
           }
           
           return category
-        }).filter(Boolean) // 过滤掉无效的分类
+        }).filter(Boolean) // Filter out invalid categories
       } catch (err) {
-        console.error('获取分类数据失败:', err)
+        console.error('Failed to get category data:', err)
         throw err
       }
     },
     retry: 2,
-    staleTime: 5 * 60 * 1000 // 5分钟缓存
+    staleTime: 5 * 60 * 1000 // 5 minutes cache
   })
 
-  // 如果发现错误，尝试重新获取数据
+  // If error is detected, try to fetch data again
   useEffect(() => {
     if (error) {
-      console.error('分类数据加载错误，尝试重新获取:', error)
+      console.error('Category data loading error, trying to fetch again:', error)
       const timer = setTimeout(() => {
         refetch()
       }, 3000)
@@ -80,15 +80,15 @@ export default function CategoriesPage() {
     }
   }, [error, refetch])
 
-  // 过滤出顶级分类并确保数据有效
+  // Filter out top-level categories and ensure data is valid
   const topLevelCategories = categoriesData?.filter((category: Category) => {
-    // 确保分类存在
+    // Ensure category exists
     if (!category) return false
-    // 检查是否为顶级分类（没有父分类）
+    // Check if it's a top-level category (no parent category)
     return !category.parent || !category.parent.id
   }) || []
 
-  // 安全地访问子分类
+  // Safely access subcategories
   const getChildCategories = (category: Category) => {
     if (!category || !category.children || !category.children.edges) {
       return []
@@ -109,20 +109,21 @@ export default function CategoriesPage() {
           </div>
         ) : error ? (
           <div className="text-center py-10">
-            <p className="text-lg text-red-500">加载分类数据时出错</p>
+            <p className="text-lg text-red-500">Error loading category data</p>
             <Button 
               onClick={() => refetch()} 
               variant="outline" 
               className="mt-4"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
-              重试
+              Retry
             </Button>
           </div>
         ) : !categoriesData || categoriesData.length === 0 ? (
-          <div className="text-center">
-            <p className="text-lg text-muted-foreground">
-              暂无商品分类
+          <div className="flex min-h-[400px] flex-col items-center justify-center">
+            <p className="text-lg font-medium">No Categories Available</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Please check back later
             </p>
           </div>
         ) : (
@@ -160,7 +161,7 @@ export default function CategoriesPage() {
                       size="sm"
                       className="pointer-events-none bg-white/10 text-white backdrop-blur-sm"
                     >
-                      {category.products?.totalCount || 0} 件商品
+                      {category.products?.totalCount || 0} Products
                     </Button>
                   </div>
                 </Link>
@@ -173,7 +174,7 @@ export default function CategoriesPage() {
                       </h2>
                       <Button variant="ghost" asChild>
                         <Link href={`/categories/${category.slug}`}>
-                          查看全部
+                          View All
                           <ChevronRight className="ml-2 h-4 w-4" />
                         </Link>
                       </Button>
@@ -194,7 +195,7 @@ export default function CategoriesPage() {
                             </p>
                           )}
                           <p className="mt-2 text-sm text-muted-foreground">
-                            {child.products?.totalCount || 0} 件商品
+                            {child.products?.totalCount || 0} Products
                           </p>
                         </Link>
                       ))}

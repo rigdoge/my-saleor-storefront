@@ -15,8 +15,8 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Saleor商城",
-  description: "基于Saleor的现代电商平台",
+  title: "Saleor Store",
+  description: "Modern e-commerce platform based on Saleor",
   manifest: "/manifest.json",
   icons: {
     icon: "/icons/logo.svg",
@@ -37,12 +37,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="application-name" content="Saleor商城" />
+        <meta name="application-name" content="Saleor Store" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="商城" />
+        <meta name="apple-mobile-web-app-title" content="Store" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#000000" />

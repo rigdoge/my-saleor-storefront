@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Heart, ShoppingBag, Star, Eye, ShoppingCart } from 'lucide-react'
+import { Heart, ShoppingBag, Star, Eye, ShoppingCart, Loader2 } from 'lucide-react'
 import { useProductActions } from '@/lib/hooks/use-product-actions'
 import { PriceDisplay } from '@/components/shared/price-display'
 import { ProductPreview } from './product-preview'
@@ -41,17 +41,17 @@ function ProductCardComponent({
     handleAddToCart,
   } = useProductActions(product)
 
-  // 检查商品是否在收藏中
+  // Check if product is in favorites
   const favorited = isFavorite(product.id)
 
-  // 处理添加到购物车
+  // Handle adding to cart
   const handleAddToCartWithToast = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
     const success = addItem({
       id: product.id,
-      variantId: product.id, // 如果没有变体，使用产品ID
+      variantId: product.id, // If no variants, use product ID
       name: product.name,
       slug: product.slug || '',
       price: product.price,
@@ -61,18 +61,18 @@ function ProductCardComponent({
         alt: product.thumbnail.alt || ''
       } : undefined,
       quantity: 1,
-      stock: product.isAvailable ? undefined : 0, // 如果商品不可用，设置库存为0
+      stock: product.isAvailable ? undefined : 0, // If product is not available, set stock to 0
     })
 
     if (success) {
       toast({
-        title: '已添加到购物车',
+        title: 'Added to cart',
         description: product.name,
       })
     }
   }
 
-  // 处理收藏切换
+  // Handle favorite toggle
   const handleFavoriteToggle = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -80,7 +80,7 @@ function ProductCardComponent({
     if (favorited) {
       removeFromFavorites(product.id)
       toast({
-        title: '已从收藏中移除',
+        title: 'Removed from favorites',
         description: product.name,
       })
     } else {
@@ -94,7 +94,7 @@ function ProductCardComponent({
         } : undefined,
       })
       toast({
-        title: '已添加到收藏',
+        title: 'Added to favorites',
         description: product.name,
       })
     }
@@ -104,12 +104,12 @@ function ProductCardComponent({
     <div className={cn("group relative", className)}>
       <Link href={`/products/${product.slug}`} className="relative block">
         <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
-          {/* 图片骨架屏 */}
+          {/* Image skeleton */}
           {isImageLoading && (
             <Skeleton className="absolute inset-0 z-10" />
           )}
           
-          {/* 商品图片 */}
+          {/* Product image */}
           {product.thumbnail?.url ? (
             <Image
               src={product.thumbnail.url}
@@ -128,7 +128,7 @@ function ProductCardComponent({
             <div className="flex h-full w-full items-center justify-center bg-muted">
               <Image
                 src="/images/placeholder.svg"
-                alt="产品图片占位符"
+                alt="Product image placeholder"
                 width={200}
                 height={200}
                 className="h-auto w-auto max-w-full"
@@ -136,7 +136,7 @@ function ProductCardComponent({
             </div>
           )}
           
-          {/* 收藏按钮 */}
+          {/* Favorite button */}
           <Button
             variant="ghost"
             size="icon"
@@ -151,13 +151,13 @@ function ProductCardComponent({
             />
           </Button>
           
-          {/* 商品标签 */}
+          {/* Product badges */}
           {!product.isAvailable && (
             <Badge 
               variant="destructive" 
               className="absolute left-2 top-2 z-10"
             >
-              缺货
+              Out of Stock
             </Badge>
           )}
           
@@ -165,7 +165,7 @@ function ProductCardComponent({
             <Badge 
               className="absolute left-2 top-2 z-10 bg-green-500 hover:bg-green-600"
             >
-              特价
+              Sale
             </Badge>
           )}
           
@@ -181,7 +181,7 @@ function ProductCardComponent({
               }}
             >
               <Eye className="h-4 w-4" />
-              <span className="sr-only">快速预览</span>
+              <span className="sr-only">Quick Preview</span>
             </Button>
           </div>
         </div>
@@ -253,12 +253,12 @@ function ProductCardComponent({
                 className="flex items-center"
               >
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                <span className="ml-2">添加中...</span>
+                <span className="ml-2">Adding...</span>
               </motion.div>
             ) : (
               <>
                 <ShoppingCart className="mr-2 h-4 w-4" />
-                加入购物车
+                Add to Cart
               </>
             )}
           </Button>

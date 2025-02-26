@@ -13,18 +13,18 @@ export function useProductActions(product: Product) {
   const { toast } = useToast()
   const isProductFavorite = isFavorite(product.id)
 
-  // 计算最终价格
+  // Calculate final price
   const hasDiscount = product.pricing?.discount && product.pricing.discount.amount > 0
   const finalPrice = hasDiscount 
     ? product.price - product.pricing!.discount!.amount 
     : product.price
 
-  // 添加到购物车
+  // Add to cart
   const handleAddToCart = async () => {
     if (!product.isAvailable) {
       toast({
-        title: '商品已售罄',
-        description: '该商品暂时无法购买',
+        title: 'Out of Stock',
+        description: 'This product is currently unavailable',
         variant: 'destructive',
       })
       return
@@ -45,13 +45,13 @@ export function useProductActions(product: Product) {
       })
 
       toast({
-        title: '已添加到购物车',
-        description: `${product.name} 已添加到您的购物车`,
+        title: 'Added to cart',
+        description: `${product.name} has been added to your cart`,
       })
     } catch (error) {
       toast({
-        title: '添加失败',
-        description: '添加商品到购物车时出错，请稍后重试',
+        title: 'Failed to add',
+        description: 'Error adding product to cart, please try again later',
         variant: 'destructive',
       })
     } finally {
@@ -59,12 +59,12 @@ export function useProductActions(product: Product) {
     }
   }
 
-  // 切换收藏状态
+  // Toggle favorite status
   const handleFavoriteToggle = () => {
     if (isProductFavorite) {
       removeFromFavorites(product.id)
       toast({
-        description: `${product.name} 已从收藏夹中移除`,
+        description: `${product.name} has been removed from favorites`,
       })
     } else {
       addToFavorites({
@@ -74,7 +74,7 @@ export function useProductActions(product: Product) {
         thumbnail: product.thumbnail,
       })
       toast({
-        description: `${product.name} 已添加到收藏夹`,
+        description: `${product.name} has been added to favorites`,
       })
     }
   }

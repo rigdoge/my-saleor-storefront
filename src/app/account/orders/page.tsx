@@ -17,6 +17,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
+import { ShoppingBag } from "lucide-react"
 
 function OrdersLoading() {
   return (
@@ -30,9 +31,13 @@ function OrdersLoading() {
 function EmptyOrders() {
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center">
-      <p className="mb-4 text-lg font-medium">暂无订单</p>
-      <Button asChild>
-        <Link href="/products">去购物</Link>
+      <ShoppingBag className="h-12 w-12 text-muted-foreground" />
+      <p className="mb-4 text-lg font-medium">No Orders</p>
+      <p className="text-sm text-muted-foreground">
+        You haven't placed any orders yet
+      </p>
+      <Button asChild className="mt-4">
+        <Link href="/products">Start Shopping</Link>
       </Button>
     </div>
   )

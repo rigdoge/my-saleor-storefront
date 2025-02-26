@@ -13,6 +13,7 @@ import { ShoppingBag } from "lucide-react"
 import { CartItem } from "./cart-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import Image from "next/image"
 
 export function CartDrawer() {
   const { cart, isOpen, setIsOpen } = useCart()
@@ -20,29 +21,34 @@ export function CartDrawer() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
-        <SheetHeader className="px-1">
+        <SheetHeader className="px-4">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
-            购物车
+            Cart
             <span className="text-sm font-normal text-muted-foreground">
-              ({cart.totalQuantity} 件商品)
+              ({cart.totalQuantity} items)
             </span>
           </SheetTitle>
         </SheetHeader>
         {cart.items.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center space-y-4">
-            <ShoppingBag className="h-12 w-12 text-muted-foreground" />
-            <div className="text-center">
-              <h3 className="text-lg font-medium">购物车是空的</h3>
-              <p className="text-sm text-muted-foreground">
-                快去挑选心仪的商品吧
-              </p>
+          <div className="flex h-full flex-col items-center justify-center space-y-2 px-4">
+            <div className="relative mb-4 h-40 w-40 text-muted-foreground">
+              <Image
+                src="/images/empty-cart.png"
+                alt="Empty cart"
+                fill
+                className="object-contain"
+              />
             </div>
+            <h3 className="text-lg font-medium">Cart is empty</h3>
+            <p className="text-center text-sm text-muted-foreground">
+              Add items to your cart to see them here.
+            </p>
             <Button
               variant="outline"
               onClick={() => setIsOpen(false)}
             >
-              继续购物
+              Continue Shopping
             </Button>
           </div>
         ) : (
@@ -59,7 +65,7 @@ export function CartDrawer() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="font-medium">小计</span>
+                    <span className="font-medium">Subtotal</span>
                     <span>
                       {formatPrice(cart.totalAmount, {
                         currency: cart.currency,
@@ -67,13 +73,13 @@ export function CartDrawer() {
                     </span>
                   </div>
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>运费</span>
-                    <span>免费</span>
+                    <span>Shipping</span>
+                    <span>Free</span>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-medium">
-                  <span>总计</span>
+                  <span>Total</span>
                   <span>
                     {formatPrice(cart.totalAmount, {
                       currency: cart.currency,
@@ -81,7 +87,7 @@ export function CartDrawer() {
                   </span>
                 </div>
                 <Button className="w-full" size="lg">
-                  去结算
+                  Checkout
                 </Button>
               </div>
             </div>

@@ -46,10 +46,10 @@ export default function CategoryPage({
   const [fallbackToId, setFallbackToId] = useState(false)
   const [categoryId, setCategoryId] = useState<string | null>(null)
   
-  // 特殊处理 Accessories/homewares 分类
+  // Special handling for Accessories/homewares category
   const isAccessoriesHomewares = params.slug === 'homewares' || params.slug === 'accessories'
 
-  // 获取分类信息
+  // Get category information
   const { 
     data: categoryData, 
     isLoading: isLoadingCategory,
@@ -59,11 +59,11 @@ export default function CategoryPage({
     queryKey: ['category', params.slug, fallbackToId, categoryId, retryCount, isAccessoriesHomewares],
     queryFn: async () => {
       try {
-        // 特殊处理 Accessories/homewares 分类
+        // Special handling for Accessories/homewares category
         if (isAccessoriesHomewares) {
-          console.log(`特殊处理 ${params.slug} 分类数据获取`)
+          console.log(`Special handling for ${params.slug} category data retrieval`)
           
-          // 添加额外的重试和错误处理
+          // Add additional retry and error handling
           let retries = 0
           const maxRetries = 3
           
@@ -72,12 +72,12 @@ export default function CategoryPage({
               const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
                 slug: params.slug,
                 channel: currentChannel.slug
-              }, true) // 添加第三个参数，表示这是特殊处理的请求
+              }, true) // Add third parameter to indicate this is a special request
               
               if (response && response.category) {
                 setCategoryId(response.category.id)
                 
-                // 验证子分类数据
+                // Validate subcategory data
                 if (response.category.children) {
                   if (!response.category.children.edges || !Array.isArray(response.category.children.edges)) {
                     response.category.children.edges = []
@@ -91,7 +91,7 @@ export default function CategoryPage({
                 return response.category
               }
               
-              throw new Error(`无法获取 ${params.slug} 分类数据`)
+              throw new Error(`Unable to get ${params.slug} category data`)
             } catch (err) {
               retries++
               if (retries >= maxRetries) throw err
@@ -100,25 +100,25 @@ export default function CategoryPage({
           }
         }
         
-        // 首先尝试通过 slug 获取
+        // First try to get by slug
         if (!fallbackToId) {
           const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
             slug: params.slug,
             channel: currentChannel.slug
           })
           
-          // 如果找到分类，保存 ID 以备后用
+          // If category is found, save ID for later use
           if (response.category) {
             setCategoryId(response.category.id)
             return response.category
           }
           
-          // 如果没有找到分类，尝试使用 ID 查询
+          // If category is not found, try using ID query
           setFallbackToId(true)
           return null
         } 
         
-        // 如果通过 slug 查询失败，尝试通过 ID 查询
+        // If slug query fails, try by ID
         if (categoryId) {
           const response = await graphqlRequestClient(CATEGORY_BY_ID_QUERY, {
             id: categoryId,
@@ -129,19 +129,19 @@ export default function CategoryPage({
         
         return null
       } catch (err) {
-        console.error('获取分类信息失败:', err)
+        console.error('Failed to get category information:', err)
         throw err
       }
     },
-    retry: isAccessoriesHomewares ? 5 : 2, // 为特殊分类增加重试次数
-    retryDelay: attempt => Math.min(1000 * 2 ** attempt, 10000), // 指数退避策略
+    retry: isAccessoriesHomewares ? 5 : 2, // Increase retry count for special categories
+    retryDelay: attempt => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff strategy
     staleTime: 5 * 60 * 1000
   })
 
-  // 如果发现错误，尝试重新获取数据
+  // If error is detected, try to fetch data again
   useEffect(() => {
     if (categoryError) {
-      console.error('分类数据加载错误，尝试重新获取:', categoryError)
+      console.error('Category data loading error, trying to fetch again:', categoryError)
       const timer = setTimeout(() => {
         setRetryCount(prev => prev + 1)
       }, 3000)
@@ -149,14 +149,14 @@ export default function CategoryPage({
     }
   }, [categoryError])
 
-  // 获取筛选条件
+  // Get filtering conditions
   const searchParamsObj = Object.fromEntries(searchParams.entries())
   const { filter, sortBy } = getProductFilters(searchParamsObj)
   if (categoryData?.id) {
     filter.categories = [categoryData.id]
   }
 
-  // 获取商品列表
+  // Get product list
   const {
     data: productsData,
     isLoading: isLoadingProducts,
@@ -168,11 +168,11 @@ export default function CategoryPage({
     queryKey: ['products', currentChannel.slug, filter, sortBy, retryCount, isAccessoriesHomewares],
     queryFn: async ({ pageParam }) => {
       try {
-        // 特殊处理 Accessories/homewares 分类的商品
+        // Special handling for Accessories/homewares category
         if (isAccessoriesHomewares) {
-          console.log(`特殊处理 ${params.slug} 分类商品数据获取`)
+          console.log(`Special handling for ${params.slug} category product data retrieval`)
           
-          // 添加额外的重试和错误处理
+          // Add additional retry and error handling
           let retries = 0
           const maxRetries = 3
           
@@ -184,13 +184,13 @@ export default function CategoryPage({
                 channel: currentChannel.slug,
                 filter,
                 sortBy
-              }, true) // 添加第三个参数，表示这是特殊处理的请求
+              }, true) // Add third parameter to indicate this is a special request
               
               if (response && response.products) {
                 return response.products
               }
               
-              throw new Error(`无法获取 ${params.slug} 分类商品数据`)
+              throw new Error(`Unable to get ${params.slug} category product data`)
             } catch (err) {
               retries++
               if (retries >= maxRetries) throw err
@@ -208,7 +208,7 @@ export default function CategoryPage({
         })
         return response.products
       } catch (err) {
-        console.error('获取商品列表失败:', err)
+        console.error('Failed to get product list:', err)
         throw err
       }
     },
@@ -220,12 +220,12 @@ export default function CategoryPage({
       return undefined
     },
     enabled: !!categoryData,
-    staleTime: isAccessoriesHomewares ? 1 * 60 * 1000 : 2 * 60 * 1000, // 特殊分类缓存时间更短
+    staleTime: isAccessoriesHomewares ? 1 * 60 * 1000 : 2 * 60 * 1000, // Special category cache time shorter
     gcTime: 10 * 60 * 1000,
-    retry: isAccessoriesHomewares ? 5 : 2 // 为特殊分类增加重试次数
+    retry: isAccessoriesHomewares ? 5 : 2 // Increase retry count for special categories
   })
 
-  // 计算商品总数和价格范围
+  // Calculate product total and price range
   const products = productsData?.pages.flatMap(page => 
     page.edges.map((edge: any) => ({
       id: edge.node.id,
@@ -254,7 +254,7 @@ export default function CategoryPage({
     { min: Infinity, max: -Infinity }
   )
 
-  // 安全地获取子分类
+  // Safely get subcategories
   const getChildCategories = () => {
     if (!categoryData || !categoryData.children || !categoryData.children.edges) {
       return []
@@ -276,9 +276,9 @@ export default function CategoryPage({
     return (
       <div className="container py-10">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">加载分类信息失败</h1>
+          <h1 className="text-2xl font-bold">Failed to load category information</h1>
           <p className="mt-2 text-muted-foreground">
-            无法加载分类信息，请稍后再试
+            Unable to load category information, please try again later
           </p>
           <Button 
             onClick={() => {
@@ -289,7 +289,7 @@ export default function CategoryPage({
             className="mt-4"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
-            重试
+            Retry
           </Button>
         </div>
       </div>
@@ -301,10 +301,10 @@ export default function CategoryPage({
   return (
     <div className="container py-10">
       <div className="space-y-6">
-        {/* 面包屑导航 */}
+        {/* Breadcrumb navigation */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
           <Link href="/categories" className="hover:underline">
-            全部分类
+            All Categories
           </Link>
           {categoryData.ancestors?.edges.map(({ node }: { node: any }) => (
             <React.Fragment key={node.id}>
@@ -321,7 +321,7 @@ export default function CategoryPage({
           <span className="text-foreground">{categoryData.name}</span>
         </nav>
 
-        {/* 分类信息 */}
+        {/* Category information */}
         <div className="relative aspect-[3/1] overflow-hidden rounded-xl">
           {categoryData.backgroundImage ? (
             <Image
@@ -349,7 +349,7 @@ export default function CategoryPage({
           </div>
         </div>
 
-        {/* 子分类列表 */}
+        {/* Subcategory list */}
         {childCategories.length > 0 && (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -361,7 +361,7 @@ export default function CategoryPage({
                 >
                   <div className="text-lg font-medium">{node.name}</div>
                   <div className="text-sm text-muted-foreground">
-                    {node.products?.totalCount || 0} 件商品
+                    {node.products?.totalCount || 0} Products
                   </div>
                 </Link>
               ))}
@@ -370,14 +370,14 @@ export default function CategoryPage({
           </>
         )}
 
-        {/* 商品筛选 */}
+        {/* Product filtering */}
         <ProductFilter
           minPrice={priceRange.min === Infinity ? 0 : priceRange.min}
           maxPrice={priceRange.max === -Infinity ? 10000 : priceRange.max}
           totalCount={totalCount}
         />
 
-        {/* 商品列表 */}
+        {/* Product list */}
         {isLoadingProducts ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -392,9 +392,9 @@ export default function CategoryPage({
           </div>
         ) : productsError ? (
           <div className="py-12 text-center">
-            <p className="text-lg font-medium text-red-500">加载商品失败</p>
+            <p className="text-lg font-medium text-red-500">Failed to load products</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              获取商品数据时出错，请稍后再试
+              Error occurred while fetching product data, please try again later
             </p>
             <Button 
               onClick={() => setRetryCount(prev => prev + 1)} 
@@ -402,14 +402,14 @@ export default function CategoryPage({
               className="mt-4"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
-              重试
+              Retry
             </Button>
           </div>
         ) : products.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="text-lg font-medium">暂无商品</p>
+          <div className="flex min-h-[400px] flex-col items-center justify-center">
+            <p className="text-lg font-medium">No Products Available</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              该分类下暂时没有商品，请稍后再来
+              Try another category or check back later
             </p>
           </div>
         ) : (
@@ -427,7 +427,7 @@ export default function CategoryPage({
           </div>
         )}
 
-        {/* 加载更多 */}
+        {/* Load more */}
         {products.length > 0 && !productsError && (
           <LoadMore
             onLoadMore={() => fetchNextPage()}

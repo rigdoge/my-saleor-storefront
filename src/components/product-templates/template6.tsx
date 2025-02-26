@@ -20,7 +20,7 @@ export function ProductTemplate6({
 }: ProductTemplateProps) {
   if (!product) return null
 
-  // 转换GraphQL返回的attributes为ProductDetails组件期望的格式
+  // Convert GraphQL returned attributes to the format expected by ProductDetails component
   const productDetails = {
     description: product.description || '',
     attributes: product.attributes || [],
@@ -28,13 +28,13 @@ export function ProductTemplate6({
     category: product.category || { name: '' }
   }
 
-  // 获取分类信息，如果没有使用默认值
+  // Get category information, use default if not available
   const categoryName = product.category?.name || 'Women'
   const subCategoryName = productDetails.metadata.find((m: any) => m.key === 'subCategory')?.value || 'Clothing'
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* 面包屑导航 */}
+      {/* Breadcrumb navigation */}
       <div className="mb-6 text-sm flex gap-2">
         <span className="text-gray-700">{categoryName}</span>
         <span className="text-gray-500">/</span>
@@ -44,14 +44,14 @@ export function ProductTemplate6({
       </div>
 
       <div className="grid md:grid-cols-2 gap-12">
-        {/* 左侧：产品图片区 */}
+        {/* Left: Product image area */}
         <div>
           <ProductGallery media={product.media || []} />
         </div>
 
-        {/* 右侧：产品信息区 */}
+        {/* Right: Product information area */}
         <div className="flex flex-col">
-          {/* 产品标题和价格 */}
+          {/* Product title and price */}
           <div className="flex justify-between items-start mb-6">
             <h1 className="text-2xl font-medium text-gray-900">{product.name}</h1>
             <span className="text-2xl font-medium">
@@ -61,7 +61,7 @@ export function ProductTemplate6({
             </span>
           </div>
           
-          {/* 评分 */}
+          {/* Ratings */}
           <div className="flex items-center gap-3 mb-8">
             <div className="flex items-center gap-1">
               <span className="text-sm font-medium">3.9</span>
@@ -82,7 +82,7 @@ export function ProductTemplate6({
             </a>
           </div>
           
-          {/* 颜色选择 */}
+          {/* Color selection */}
           <div className="mb-8">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Color</h3>
             <div className="flex gap-2">
@@ -91,7 +91,7 @@ export function ProductTemplate6({
             </div>
           </div>
 
-          {/* 尺寸选择 */}
+          {/* Size selection */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-sm font-medium text-gray-900">Size</h3>
@@ -121,7 +121,7 @@ export function ProductTemplate6({
             </div>
           </div>
           
-          {/* 添加到购物车按钮 */}
+          {/* Add to cart button */}
           <Button
             className="w-full bg-indigo-600 hover:bg-indigo-700 py-3 rounded"
             onClick={onAddToCart}
@@ -130,7 +130,7 @@ export function ProductTemplate6({
             Add to cart
           </Button>
           
-          {/* 产品描述 */}
+          {/* Product description */}
           <div className="mt-10">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Description</h3>
             <p className="text-gray-600 mb-6">
@@ -141,7 +141,7 @@ export function ProductTemplate6({
             </p>
           </div>
           
-          {/* 面料与保养 */}
+          {/* Fabric & Care */}
           <div className="mt-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Fabric & Care</h3>
             <ul className="list-disc list-inside space-y-2 text-gray-600">
@@ -152,7 +152,7 @@ export function ProductTemplate6({
             </ul>
           </div>
           
-          {/* 服务信息 */}
+          {/* Service information */}
           <div className="mt-10 grid grid-cols-2 gap-6">
             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col items-center justify-center text-center">
               <Truck className="h-6 w-6 text-gray-400 mb-2" />
