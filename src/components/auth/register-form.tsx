@@ -28,15 +28,15 @@ export function RegisterForm() {
     e.preventDefault()
     setError(null)
 
-    // 验证密码
+    // Validate password
     if (password !== confirmPassword) {
-      setError("两次输入的密码不一致")
+      setError("Passwords do not match")
       return
     }
 
-    // 验证条款同意
+    // Validate terms agreement
     if (!agreeTerms) {
-      setError("请同意用户条款和隐私政策")
+      setError("Please agree to the Terms of Service and Privacy Policy")
       return
     }
 
@@ -50,7 +50,7 @@ export function RegisterForm() {
         lastName,
       })
     } catch (error) {
-      setError(error instanceof Error ? error.message : "注册失败，请重试")
+      setError(error instanceof Error ? error.message : "Registration failed, please try again")
     } finally {
       setIsLoading(false)
     }
@@ -89,13 +89,13 @@ export function RegisterForm() {
             transition={{ delay: 0.1 }}
           >
             <Label htmlFor="firstName" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              名字
+              First Name
             </Label>
             <div className="relative">
               <Input
                 id="firstName"
                 type="text"
-                placeholder="您的名字"
+                placeholder="Your first name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
@@ -115,13 +115,13 @@ export function RegisterForm() {
             transition={{ delay: 0.15 }}
           >
             <Label htmlFor="lastName" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              姓氏
+              Last Name
             </Label>
             <div className="relative">
               <Input
                 id="lastName"
                 type="text"
-                placeholder="您的姓氏"
+                placeholder="Your last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
@@ -142,7 +142,7 @@ export function RegisterForm() {
           transition={{ delay: 0.2 }}
         >
           <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            电子邮箱
+            Email
           </Label>
           <div className="relative">
             <Input
@@ -168,7 +168,7 @@ export function RegisterForm() {
           transition={{ delay: 0.25 }}
         >
           <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            密码
+            Password
           </Label>
           <div className="relative">
             <Input
@@ -196,7 +196,7 @@ export function RegisterForm() {
             </button>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            密码至少需要8个字符，包含字母和数字
+            Password must be at least 8 characters, including letters and numbers
           </p>
         </motion.div>
 
@@ -208,7 +208,7 @@ export function RegisterForm() {
           transition={{ delay: 0.3 }}
         >
           <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            确认密码
+            Confirm Password
           </Label>
           <div className="relative">
             <Input
@@ -258,13 +258,13 @@ export function RegisterForm() {
               htmlFor="terms" 
               className="text-sm text-slate-600 dark:text-slate-400"
             >
-              我同意 
+              I agree to the 
               <a href="/terms" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                用户条款
+                Terms of Service
               </a>
-              {" "}和{" "}
+              {" "}and{" "}
               <a href="/privacy" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                隐私政策
+                Privacy Policy
               </a>
             </Label>
           </div>
@@ -284,10 +284,10 @@ export function RegisterForm() {
             {isLoading ? (
               <>
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                注册中...
+                Registering...
               </>
             ) : (
-              "创建账户"
+              "Create Account"
             )}
           </Button>
         </motion.div>
@@ -304,7 +304,7 @@ export function RegisterForm() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-              或者使用
+              Or use
             </span>
           </div>
         </motion.div>

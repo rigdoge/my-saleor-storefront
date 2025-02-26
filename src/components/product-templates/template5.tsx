@@ -36,97 +36,138 @@ export function ProductTemplate5({
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb navigation */}
       <div className="mb-8 text-sm flex gap-2">
-        <span className="text-gray-500">{categoryName}</span>
-        <span className="text-gray-500">/</span>
-        <span className="text-gray-500">{subCategoryName}</span>
+        <span className="text-gray-500 dark:text-gray-400">{categoryName}</span>
+        <span className="text-gray-500 dark:text-gray-400">/</span>
+        <span className="text-gray-500 dark:text-gray-400">{subCategoryName}</span>
       </div>
 
       <div className="grid md:grid-cols-2 gap-12">
         {/* Left: Product information area */}
         <div className="flex flex-col">
           {/* Product title */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">{product.name}</h1>
           
           {/* Price */}
-          <div className="flex items-center gap-6 mb-6">
-            <span className="text-2xl font-medium text-gray-900">
-              {selectedVariant?.pricing?.price?.gross 
-                ? formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-                : "$220"}
-            </span>
-            
-            {/* Ratings */}
-            <div className="flex items-center">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((_, i) => (
-                  <svg 
-                    key={i} 
-                    className={cn(
-                      "w-5 h-5",
-                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300 fill-gray-300"
-                    )}
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                  </svg>
-                ))}
+          <div className="mb-6">
+            {selectedVariant?.pricing?.discount?.gross ? (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)}
+                </span>
+                <span className="text-gray-500 dark:text-gray-400 line-through text-sm">
+                  {formatPrice(
+                    selectedVariant.pricing.undiscountedPrice.gross.amount,
+                    selectedVariant.pricing.undiscountedPrice.gross.currency
+                  )}
+                </span>
               </div>
-              <span className="ml-2 text-sm text-gray-500">
-                1624 reviews
+            ) : selectedVariant?.pricing?.price?.gross ? (
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)}
               </span>
-            </div>
+            ) : (
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">Price TBD</span>
+            )}
           </div>
           
-          {/* Product description */}
-          <p className="text-gray-600 mb-8">
-            {product.description || "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure."}
-          </p>
-          
-          {/* Stock status */}
-          <div className="flex items-center gap-2 text-green-600 mb-8">
-            <Check className="h-5 w-5" />
-            <span>In stock and ready to ship</span>
-          </div>
-          
-          {/* Size selection */}
+          {/* Description */}
           <div className="mb-8">
-            <h3 className="font-medium mb-4">Size</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className={`border rounded-lg p-4 cursor-pointer ${true ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}>
-                <div className="font-semibold">18L</div>
-                <div className="text-sm text-gray-500">Perfect for a reasonable amount of snacks.</div>
-              </div>
-              <div className={`border rounded-lg p-4 cursor-pointer ${false ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'}`}>
-                <div className="font-semibold">20L</div>
-                <div className="text-sm text-gray-500">Enough room for a serious amount of snacks.</div>
-              </div>
+            <div className="prose prose-sm max-w-none text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: productDetails.description }} />
+          </div>
+          
+          {/* Features */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Features</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start">
+                <div className="flex-shrink-0 h-5 w-5 relative mt-1">
+                  <div className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-full"></div>
+                  <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="ml-3 text-gray-600 dark:text-gray-300">Premium materials for durability and comfort</p>
+              </li>
+              <li className="flex items-start">
+                <div className="flex-shrink-0 h-5 w-5 relative mt-1">
+                  <div className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-full"></div>
+                  <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="ml-3 text-gray-600 dark:text-gray-300">Thoughtfully designed for everyday use</p>
+              </li>
+              <li className="flex items-start">
+                <div className="flex-shrink-0 h-5 w-5 relative mt-1">
+                  <div className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-full"></div>
+                  <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="ml-3 text-gray-600 dark:text-gray-300">Versatile design that complements any style</p>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Quantity selection */}
+          <div className="mb-6">
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Quantity
+            </label>
+            <div className="flex items-center">
+              <button
+                type="button"
+                className="p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <input
+                type="text"
+                id="quantity"
+                className="p-2 w-12 text-center border-t border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                value={quantity}
+                readOnly
+              />
+              <button
+                type="button"
+                className="p-2 border border-gray-300 dark:border-gray-600 rounded-r-md bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                onClick={() => onQuantityChange(quantity + 1)}
+                disabled={selectedVariant && quantity >= selectedVariant.quantityAvailable}
+              >
+                +
+              </button>
+              
+              {selectedVariant && (
+                <span className="ml-4 text-sm text-gray-500 dark:text-gray-400">
+                  {selectedVariant.quantityAvailable > 0 
+                    ? `${selectedVariant.quantityAvailable} available` 
+                    : 'Out of stock'}
+                </span>
+              )}
             </div>
           </div>
           
-          {/* Size guide link */}
-          <div className="flex items-center gap-1 text-sm mb-8">
-            <HelpCircle className="h-4 w-4 text-gray-400" />
-            <a href="#" className="text-gray-500 hover:text-gray-700">What size should I buy?</a>
+          {/* Add to cart button */}
+          <div className="mb-8">
+            <Button
+              className="w-full py-3 bg-gray-900 hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 text-white"
+              disabled={isAddingToCart || !selectedVariant || selectedVariant.quantityAvailable <= 0}
+              onClick={onAddToCart}
+            >
+              {isAddingToCart ? "Adding..." : "Add to Cart"}
+            </Button>
           </div>
           
-          {/* Add to bag button */}
-          <Button
-            className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 rounded-md"
-            onClick={onAddToCart}
-            disabled={isAddingToCart}
-          >
-            Add to bag
-          </Button>
-          
-          {/* Guarantee information */}
-          <div className="flex items-center gap-2 mt-6 justify-center text-gray-500">
-            <Shield className="h-5 w-5" />
-            <span>Lifetime Guarantee</span>
+          {/* Shipping information */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <div className="flex items-center mb-4">
+              <Shield className="h-5 w-5 text-gray-400 dark:text-gray-500 mr-2" />
+              <span className="text-sm text-gray-600 dark:text-gray-300">Secure checkout</span>
+            </div>
+            <div className="flex items-center">
+              <HelpCircle className="h-5 w-5 text-gray-400 dark:text-gray-500 mr-2" />
+              <span className="text-sm text-gray-600 dark:text-gray-300">Questions? Contact our support team</span>
+            </div>
           </div>
         </div>
-
-        {/* Right: Product image area */}
+        
+        {/* Right: Product gallery area */}
         <div>
           <ProductGallery media={product.media || []} />
         </div>

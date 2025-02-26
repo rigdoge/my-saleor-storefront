@@ -3,9 +3,10 @@
 import React from 'react'
 import { ProductTemplateProps } from './dynamic-product-detail'
 import { Button } from '@/components/ui/button'
-import { Star, Truck, DollarSign } from 'lucide-react'
+import { Check, Heart, ShoppingCart } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { ProductGallery } from '@/components/product/product-gallery'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
 export function ProductTemplate6({
@@ -29,142 +30,187 @@ export function ProductTemplate6({
   }
 
   // Get category information, use default if not available
-  const categoryName = product.category?.name || 'Women'
+  const categoryName = product.category?.name || 'Fashion'
   const subCategoryName = productDetails.metadata.find((m: any) => m.key === 'subCategory')?.value || 'Clothing'
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb navigation */}
-      <div className="mb-6 text-sm flex gap-2">
-        <span className="text-gray-700">{categoryName}</span>
-        <span className="text-gray-500">/</span>
-        <span className="text-gray-700">{subCategoryName}</span>
-        <span className="text-gray-500">/</span>
-        <span className="text-gray-500">{product.name}</span>
+      <div className="mb-8 text-sm flex gap-2">
+        <span className="text-gray-500 dark:text-gray-400">{categoryName}</span>
+        <span className="text-gray-500 dark:text-gray-400">/</span>
+        <span className="text-gray-500 dark:text-gray-400">{subCategoryName}</span>
       </div>
 
       <div className="grid md:grid-cols-2 gap-12">
-        {/* Left: Product image area */}
+        {/* Left: Product gallery area */}
         <div>
           <ProductGallery media={product.media || []} />
         </div>
-
+        
         {/* Right: Product information area */}
         <div className="flex flex-col">
-          {/* Product title and price */}
-          <div className="flex justify-between items-start mb-6">
-            <h1 className="text-2xl font-medium text-gray-900">{product.name}</h1>
-            <span className="text-2xl font-medium">
-              {selectedVariant?.pricing?.price?.gross 
-                ? formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-                : "$35"}
-            </span>
-          </div>
+          {/* Product title */}
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{product.name}</h1>
           
-          {/* Ratings */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex items-center gap-1">
-              <span className="text-sm font-medium">3.9</span>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={cn(
-                      "h-4 w-4",
-                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-                    )}
-                  />
-                ))}
+          {/* Product subtitle */}
+          <p className="text-gray-500 dark:text-gray-400 mb-4">Premium quality, handcrafted with care</p>
+          
+          {/* Price */}
+          <div className="mb-6">
+            {selectedVariant?.pricing?.discount?.gross ? (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)}
+                </span>
+                <span className="text-gray-500 dark:text-gray-400 line-through text-sm">
+                  {formatPrice(
+                    selectedVariant.pricing.undiscountedPrice.gross.amount,
+                    selectedVariant.pricing.undiscountedPrice.gross.currency
+                  )}
+                </span>
+                <span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs px-2 py-1 rounded-full">
+                  Sale
+                </span>
               </div>
-            </div>
-            <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-              See all 512 reviews
-            </a>
+            ) : selectedVariant?.pricing?.price?.gross ? (
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {formatPrice(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)}
+              </span>
+            ) : (
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">Price TBD</span>
+            )}
           </div>
           
-          {/* Color selection */}
-          <div className="mb-8">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Color</h3>
-            <div className="flex gap-2">
-              <button className="w-8 h-8 rounded-full bg-gray-900 border-2 border-indigo-500 ring-2 ring-white"></button>
-              <button className="w-8 h-8 rounded-full bg-gray-400 border-2 border-transparent"></button>
-            </div>
-          </div>
-
-          {/* Size selection */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-sm font-medium text-gray-900">Size</h3>
-              <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                See sizing chart
-              </a>
-            </div>
-            <div className="grid grid-cols-6 gap-2">
-              <button className="py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
-                XXS
-              </button>
-              <button className="py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
-                XS
-              </button>
-              <button className="py-2 border border-transparent rounded text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                S
-              </button>
-              <button className="py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
-                M
-              </button>
-              <button className="py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
-                L
-              </button>
-              <button className="py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
-                XL
-              </button>
-            </div>
-          </div>
-          
-          {/* Add to cart button */}
-          <Button
-            className="w-full bg-indigo-600 hover:bg-indigo-700 py-3 rounded"
-            onClick={onAddToCart}
-            disabled={isAddingToCart}
-          >
-            Add to cart
-          </Button>
-          
-          {/* Product description */}
-          <div className="mt-10">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Description</h3>
-            <p className="text-gray-600 mb-6">
-              The Basic tee is an honest new take on a classic. The tee uses super soft, pre-shrunk cotton for true comfort and a dependable fit. They are hand cut and sewn locally, with a special dye technique that gives each tee it's own look.
-            </p>
-            <p className="text-gray-600 mb-6">
-              Looking to stock your closet? The Basic tee also comes in a 3-pack or 5-pack at a bundle discount.
+          {/* Short description */}
+          <div className="mb-6">
+            <p className="text-gray-600 dark:text-gray-300">
+              {productDetails.description.substring(0, 150)}...
             </p>
           </div>
           
-          {/* Fabric & Care */}
-          <div className="mt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Fabric & Care</h3>
-            <ul className="list-disc list-inside space-y-2 text-gray-600">
-              <li>Only the best materials</li>
-              <li>Ethically and locally made</li>
-              <li>Pre-washed and pre-shrunk</li>
-              <li>Machine wash cold with similar colors</li>
-            </ul>
+          {/* Quantity selection */}
+          <div className="mb-6">
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Quantity
+            </label>
+            <div className="flex items-center">
+              <button
+                type="button"
+                className="p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <input
+                type="text"
+                id="quantity"
+                className="p-2 w-12 text-center border-t border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                value={quantity}
+                readOnly
+              />
+              <button
+                type="button"
+                className="p-2 border border-gray-300 dark:border-gray-600 rounded-r-md bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                onClick={() => onQuantityChange(quantity + 1)}
+                disabled={selectedVariant && quantity >= selectedVariant.quantityAvailable}
+              >
+                +
+              </button>
+              
+              {selectedVariant && (
+                <span className="ml-4 text-sm text-gray-500 dark:text-gray-400">
+                  {selectedVariant.quantityAvailable > 0 
+                    ? `${selectedVariant.quantityAvailable} available` 
+                    : 'Out of stock'}
+                </span>
+              )}
+            </div>
           </div>
           
-          {/* Service information */}
-          <div className="mt-10 grid grid-cols-2 gap-6">
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col items-center justify-center text-center">
-              <Truck className="h-6 w-6 text-gray-400 mb-2" />
-              <h4 className="text-sm font-medium text-gray-900">International delivery</h4>
-              <p className="text-xs text-gray-500 mt-1">Get your order in 2 years</p>
+          {/* Action buttons */}
+          <div className="flex gap-4 mb-8">
+            <Button
+              className="flex-1 bg-gray-900 hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 text-white"
+              disabled={isAddingToCart || !selectedVariant || selectedVariant.quantityAvailable <= 0}
+              onClick={onAddToCart}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              {isAddingToCart ? "Adding..." : "Add to Cart"}
+            </Button>
+            <Button
+              variant="outline"
+              className="px-4 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              onClick={onToggleFavorite}
+            >
+              <Heart className={cn("h-4 w-4", isFavorite ? "fill-red-500 text-red-500" : "")} />
+            </Button>
+          </div>
+          
+          {/* Product benefits */}
+          <div className="mb-8 space-y-3">
+            <div className="flex items-start">
+              <div className="flex-shrink-0 h-5 w-5 relative mt-1">
+                <div className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-full"></div>
+                <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <p className="ml-3 text-gray-600 dark:text-gray-300">Free shipping on orders over $100</p>
             </div>
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col items-center justify-center text-center">
-              <DollarSign className="h-6 w-6 text-gray-400 mb-2" />
-              <h4 className="text-sm font-medium text-gray-900">Loyalty rewards</h4>
-              <p className="text-xs text-gray-500 mt-1">Don't look at other tees</p>
+            <div className="flex items-start">
+              <div className="flex-shrink-0 h-5 w-5 relative mt-1">
+                <div className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-full"></div>
+                <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <p className="ml-3 text-gray-600 dark:text-gray-300">30-day money-back guarantee</p>
+            </div>
+            <div className="flex items-start">
+              <div className="flex-shrink-0 h-5 w-5 relative mt-1">
+                <div className="absolute inset-0 bg-green-100 dark:bg-green-900/30 rounded-full"></div>
+                <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <p className="ml-3 text-gray-600 dark:text-gray-300">Secure checkout</p>
             </div>
           </div>
+          
+          {/* Product details tabs */}
+          <Tabs defaultValue="description" className="w-full">
+            <TabsList className="grid grid-cols-3 mb-4 bg-gray-100 dark:bg-gray-800">
+              <TabsTrigger value="description" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Description</TabsTrigger>
+              <TabsTrigger value="details" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Details</TabsTrigger>
+              <TabsTrigger value="shipping" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Shipping</TabsTrigger>
+            </TabsList>
+            <TabsContent value="description" className="p-4 border rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <div className="prose prose-sm max-w-none text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: productDetails.description }} />
+            </TabsContent>
+            <TabsContent value="details" className="p-4 border rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <div className="space-y-4">
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">Product Specifications</h3>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                  {productDetails.attributes.map((attr: any, index: number) => (
+                    <li key={index} className="flex justify-between">
+                      <span className="font-medium">{attr.attribute.name}:</span>
+                      <span>{attr.values[0].name}</span>
+                    </li>
+                  ))}
+                  {productDetails.attributes.length === 0 && (
+                    <li>No specifications available</li>
+                  )}
+                </ul>
+              </div>
+            </TabsContent>
+            <TabsContent value="shipping" className="p-4 border rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <div className="space-y-4 text-gray-600 dark:text-gray-300">
+                <p>We offer the following shipping options:</p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Standard Shipping (3-5 business days): $5.99</li>
+                  <li>Express Shipping (1-2 business days): $12.99</li>
+                  <li>Free Standard Shipping on orders over $100</li>
+                </ul>
+                <p>International shipping available to select countries.</p>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

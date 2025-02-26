@@ -44,6 +44,9 @@ export function useLocalStorage<T>(
       // 保存到localStorage
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, serialize(valueToStore))
+        
+        // Dispatch a custom event so other components can listen for changes
+        window.dispatchEvent(new Event('local-storage-change'))
       }
     } catch (error) {
       onError(error instanceof Error ? error : new Error(String(error)))

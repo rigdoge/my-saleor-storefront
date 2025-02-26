@@ -308,7 +308,7 @@ export const GET_PRODUCTS = gql`
   }
 `
 
-// 定义排序和筛选类型
+// Define sort and filter types
 export type ProductSortField = 'PRICE' | 'NAME' | 'RANK' | 'DATE'
 export type ProductOrderDirection = 'ASC' | 'DESC'
 
@@ -331,7 +331,7 @@ export interface ProductFilterInput {
   isAvailable?: boolean
 }
 
-// 将 URL 参数转换为 GraphQL 筛选条件
+// Convert URL parameters to GraphQL filter conditions
 export function getProductFilters(searchParams: URLSearchParams | Record<string, string>): {
   filter: {
     isAvailable?: boolean
@@ -351,7 +351,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
     direction: string
   }
 } {
-  // 将 searchParams 转换为普通对象
+  // Convert searchParams to a regular object
   const params = searchParams instanceof URLSearchParams 
     ? Object.fromEntries(searchParams.entries()) 
     : searchParams
@@ -359,12 +359,12 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
   const filter: ProductFilterInput = {}
   const sort = params.sort
   
-  // 搜索关键词
+  // Search keyword
   if (params.search) {
     filter.search = params.search
   }
   
-  // 价格范围
+  // Price range
   const minPrice = params.minPrice
   const maxPrice = params.maxPrice
   if (minPrice || maxPrice) {
@@ -373,7 +373,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
     if (maxPrice) filter.price.lte = parseFloat(maxPrice)
   }
 
-  // 品牌筛选
+  // Brand filter
   const brands = params.brands?.split(',')
   if (brands?.length) {
     filter.attributes = [
@@ -382,7 +382,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
     ]
   }
 
-  // 颜色筛选
+  // Color filter
   const colors = params.colors?.split(',')
   if (colors?.length) {
     filter.attributes = [
@@ -391,7 +391,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
     ]
   }
 
-  // 尺寸筛选
+  // Size filter
   const sizes = params.sizes?.split(',')
   if (sizes?.length) {
     filter.attributes = [
@@ -400,14 +400,14 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
     ]
   }
 
-  // 库存状态
+  // Stock status
   const inStock = params.inStock
   if (inStock === 'true') {
     filter.isAvailable = true
   }
 
-  // 排序
-  let sortBy: ProductSortInput = { field: 'RANK', direction: 'DESC' } // 默认排序
+  // Sorting
+  let sortBy: ProductSortInput = { field: 'RANK', direction: 'DESC' } // Default sorting
   if (sort) {
     switch (sort) {
       case 'price_asc':

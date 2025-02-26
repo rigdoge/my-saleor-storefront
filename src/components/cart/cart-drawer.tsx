@@ -34,7 +34,7 @@ export function CartDrawer() {
           <div className="flex h-full flex-col items-center justify-center space-y-2 px-4">
             <div className="relative mb-4 h-40 w-40 text-muted-foreground">
               <Image
-                src="/images/empty-cart.png"
+                src="/images/empty-cart.svg"
                 alt="Empty cart"
                 fill
                 className="object-contain"
