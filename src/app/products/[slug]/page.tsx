@@ -98,6 +98,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     )
   }
 
+  // Check if this is a gift card product
+  const isGiftCard = product.productType?.kind === 'GIFT_CARD'
+
   const handleFavoriteClick = () => {
     if (!product) return
 
@@ -117,13 +120,41 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   }
 
   const handleAddToCart = () => {
-    if (!product || !product.variants) return
+    if (!product) return
     
     setIsAddingToCart(true)
     
-    // If the product has no variant options, use default price
-    const variant = selectedVariant || (product.variants.length === 1 ? product.variants[0] : null)
-    if (!variant && product.variants.length > 1) {
+    // For gift cards, we don't need to check variants
+    if (isGiftCard) {
+      const price = product.pricing?.priceRange?.start?.gross?.amount || 0
+      const currency = product.pricing?.priceRange?.start?.gross?.currency || 'CNY'
+
+      addItem({
+        id: crypto.randomUUID(),
+        variantId: product.id,
+        name: product.name,
+        slug: product.slug,
+        quantity,
+        price,
+        currency,
+        thumbnail: product.thumbnail ? {
+          url: product.thumbnail.url,
+          alt: product.thumbnail.alt || ""
+        } : undefined,
+        isGiftCard: true
+      })
+
+      toast({
+        description: "Gift card added to cart",
+      })
+      
+      setTimeout(() => setIsAddingToCart(false), 500)
+      return
+    }
+    
+    // For regular products
+    const variant = selectedVariant || (product.variants && product.variants.length === 1 ? product.variants[0] : null)
+    if (!variant && product.variants && product.variants.length > 1) {
       setIsAddingToCart(false)
       return
     }
@@ -162,10 +193,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setTimeout(() => setIsAddingToCart(false), 500)
   }
 
-  const hasVariants = product?.variants && product.variants.length > 1
-  const isOutOfStock = product?.isAvailable === false || (product?.variants && product.variants.every((v: any) => v.quantityAvailable === 0))
+  const hasVariants = !isGiftCard && product.variants && product.variants.length > 1
+  const isOutOfStock = product.isAvailable === false || (!isGiftCard && product.variants && product.variants.every((v: any) => v.quantityAvailable === 0))
   
-  const maxQuantity = selectedVariant?.quantityAvailable || 99
+  const maxQuantity = isGiftCard ? 99 : (selectedVariant?.quantityAvailable || 99)
   
   const handleQuantityChange = (newQuantity: number) => {
     setQuantity(newQuantity)
@@ -182,6 +213,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       onToggleFavorite={handleFavoriteClick}
       isFavorite={isFavorite(product?.id || "")}
       isAddingToCart={isAddingToCart}
+      isGiftCard={isGiftCard}
     />
   )
 } 

@@ -50,12 +50,17 @@ export function CartItem({ item }: CartItemProps) {
             onClick={() => removeItem(item.id)}
           >
             <X className="h-4 w-4" />
-            <span className="sr-only">删除</span>
+            <span className="sr-only">Remove</span>
           </Button>
         </div>
-        {item.variant && (
+        {item.variant && !item.isGiftCard && (
           <p className="text-sm text-muted-foreground">
             {item.variant.name}
+          </p>
+        )}
+        {item.isGiftCard && (
+          <p className="text-sm text-muted-foreground">
+            Gift Card
           </p>
         )}
         <div className="flex items-center justify-between gap-2">
@@ -68,7 +73,7 @@ export function CartItem({ item }: CartItemProps) {
               disabled={item.quantity <= 1}
             >
               <Minus className="h-4 w-4" />
-              <span className="sr-only">减少数量</span>
+              <span className="sr-only">Decrease quantity</span>
             </Button>
             <span className="w-8 text-center">{item.quantity}</span>
             <Button
@@ -76,10 +81,10 @@ export function CartItem({ item }: CartItemProps) {
               size="icon"
               className="h-8 w-8"
               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-              disabled={item.variant?.quantityAvailable === item.quantity}
+              disabled={!item.isGiftCard && item.variant?.quantityAvailable === item.quantity}
             >
               <Plus className="h-4 w-4" />
-              <span className="sr-only">增加数量</span>
+              <span className="sr-only">Increase quantity</span>
             </Button>
           </div>
           <div className="flex flex-col items-end gap-1">
@@ -90,7 +95,7 @@ export function CartItem({ item }: CartItemProps) {
             </span>
             {item.quantity > 1 && (
               <span className="text-sm text-muted-foreground">
-                {formatPrice(item.price, { currency: item.currency })} / 件
+                {formatPrice(item.price, { currency: item.currency })} / item
               </span>
             )}
           </div>

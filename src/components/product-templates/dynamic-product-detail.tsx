@@ -20,6 +20,7 @@ export interface ProductTemplateProps {
   onToggleFavorite: () => void
   isFavorite: boolean
   isAddingToCart: boolean
+  isGiftCard?: boolean
 }
 
 export function DynamicProductDetail(props: ProductTemplateProps) {
@@ -29,9 +30,12 @@ export function DynamicProductDetail(props: ProductTemplateProps) {
     1
   )
 
+  // For gift cards, always use template 1
+  const effectiveTemplate = props.isGiftCard ? 1 : selectedTemplate
+
   // Render the selected template component
   const renderTemplate = () => {
-    switch (selectedTemplate) {
+    switch (effectiveTemplate) {
       case 1:
         return <ProductTemplate1 {...props} />
       case 2:
@@ -52,10 +56,12 @@ export function DynamicProductDetail(props: ProductTemplateProps) {
   return (
     <div className="relative bg-white dark:bg-gray-900 min-h-screen">
       {renderTemplate()}
-      <ProductTemplateSelector 
-        onSelectTemplate={setSelectedTemplate} 
-        currentTemplate={selectedTemplate} 
-      />
+      {!props.isGiftCard && (
+        <ProductTemplateSelector 
+          onSelectTemplate={setSelectedTemplate} 
+          currentTemplate={selectedTemplate} 
+        />
+      )}
     </div>
   )
 } 

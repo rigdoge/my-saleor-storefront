@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 
 // Define types for category data
 type CategoryImage = {
@@ -179,20 +180,22 @@ export function MegaMenu({ style = 'modern' }: MegaMenuProps) {
                       </div>
                     </div>
                     <div className="col-span-4">
-                      {category.backgroundImage?.url ? (
-                        <div className="aspect-square relative overflow-hidden rounded-lg">
-                          <Image
-                            src={category.backgroundImage.url}
-                            alt={category.backgroundImage.alt || category.name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                          <span className="text-muted-foreground">{category.name}</span>
-                        </div>
-                      )}
+                      <Link href={`/categories/${category.slug}`} className="block">
+                        {category.backgroundImage?.url ? (
+                          <div className="aspect-square relative overflow-hidden rounded-lg">
+                            <Image
+                              src={category.backgroundImage.url}
+                              alt={category.backgroundImage.alt || category.name}
+                              fill
+                              className="object-cover transition-transform hover:scale-105"
+                            />
+                          </div>
+                        ) : (
+                          <div className="aspect-square bg-muted rounded-lg flex items-center justify-center hover:bg-muted/80 transition-colors">
+                            <span className="text-muted-foreground">{category.name}</span>
+                          </div>
+                        )}
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
@@ -250,26 +253,31 @@ export function MegaMenu({ style = 'modern' }: MegaMenuProps) {
                                 className="object-cover transition-transform group-hover:scale-105"
                               />
                             ) : (
-                              <div className="w-full h-full bg-muted flex items-center justify-center">
+                              <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center group-hover:bg-accent transition-colors">
                                 <span className="text-muted-foreground">{node.name}</span>
                               </div>
                             )}
                           </div>
-                          <h3 className="font-medium group-hover:text-primary">{node.name}</h3>
-                          <p className="text-sm text-muted-foreground">{node.products.totalCount} products</p>
+                          <h3 className="font-medium group-hover:text-primary transition-colors">
+                            {node.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {node.products.totalCount} products
+                          </p>
                         </Link>
                       ))
                     ) : (
-                      <div className="col-span-4 text-center py-10">
+                      <div className="col-span-4 text-center py-8">
                         <p className="text-muted-foreground">No subcategories available</p>
-                        <Link 
-                          href={`/categories/${category.slug}`}
-                          className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
-                        >
-                          View all products in {category.name}
-                        </Link>
                       </div>
                     )}
+                  </div>
+                  <div className="mt-6 flex justify-end">
+                    <Button asChild>
+                      <Link href={`/categories/${category.slug}`}>
+                        View all {category.products.totalCount} products
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -284,97 +292,103 @@ export function MegaMenu({ style = 'modern' }: MegaMenuProps) {
   const SidebarMegaMenu = () => (
     <div className="container mx-auto">
       <StyleSwitcher />
-      <div className="flex border rounded-lg overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-1/4 border-r bg-muted/30">
-          <ScrollArea className="h-[500px]">
-            <div className="p-2">
+      <div className="grid grid-cols-12 gap-8">
+        <div className="col-span-3 border-r pr-4">
+          <ScrollArea className="h-[400px]">
+            <div className="space-y-1">
               {loading ? (
                 <div className="space-y-2">
                   {[1, 2, 3, 4, 5].map((index) => (
-                    <div key={index} className="h-10 bg-muted animate-pulse rounded" />
+                    <div key={index} className="h-10 w-full bg-muted animate-pulse rounded" />
                   ))}
                 </div>
               ) : (
-                categories.map((category, index) => (
-                  <React.Fragment key={category.id}>
+                categories.map((category) => (
+                  <div key={category.id} className="flex flex-col">
                     <Link 
                       href={`/categories/${category.slug}`}
-                      className={cn(
-                        "block px-4 py-2 text-sm font-medium rounded-md hover:bg-accent", 
-                        activeStyle === 'sidebar' && index === 0 && "bg-accent"
-                      )}
+                      className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
                     >
                       {category.name}
-                      <span className="ml-2 text-xs text-muted-foreground">({category.products.totalCount})</span>
+                      <span className="text-xs text-muted-foreground">
+                        ({category.products.totalCount})
+                      </span>
                     </Link>
-                    {index < categories.length - 1 && <Separator className="my-1" />}
-                  </React.Fragment>
+                    {category.children.edges.length > 0 && (
+                      <div className="ml-4 border-l pl-2 mt-1">
+                        {category.children.edges.slice(0, 5).map(({ node }) => (
+                          <Link 
+                            key={node.id} 
+                            href={`/categories/${node.slug}`}
+                            className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs hover:bg-accent"
+                          >
+                            {node.name}
+                            <span className="text-xs text-muted-foreground">
+                              ({node.products.totalCount})
+                            </span>
+                          </Link>
+                        ))}
+                        {category.children.edges.length > 5 && (
+                          <Link 
+                            href={`/categories/${category.slug}`}
+                            className="flex items-center px-3 py-1.5 text-xs text-primary hover:underline"
+                          >
+                            + {category.children.edges.length - 5} more
+                          </Link>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 ))
               )}
             </div>
           </ScrollArea>
         </div>
-        
-        {/* Content */}
-        <div className="w-3/4 p-6">
-          {loading ? (
-            <div className="grid grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((index) => (
-                <div key={index} className="h-40 bg-muted animate-pulse rounded" />
-              ))}
-            </div>
-          ) : (
-            <>
-              {/* Show first category subcategories by default */}
-              {categories.length > 0 && (
-                <>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">{categories[0].name}</h2>
-                    <Link 
-                      href={`/categories/${categories[0].slug}`}
-                      className="text-sm font-medium text-primary hover:underline"
-                    >
-                      View all
-                    </Link>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-6">
-                    {categories[0].children.edges.length > 0 ? (
-                      categories[0].children.edges.slice(0, 6).map(({ node }) => (
-                        <Link 
-                          key={node.id} 
-                          href={`/categories/${node.slug}`}
-                          className="group"
-                        >
-                          <div className="aspect-video relative overflow-hidden rounded-lg mb-2">
-                            {node.backgroundImage?.url ? (
-                              <Image
-                                src={node.backgroundImage.url}
-                                alt={node.backgroundImage.alt || node.name}
-                                fill
-                                className="object-cover transition-transform group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-muted flex items-center justify-center">
-                                <span className="text-muted-foreground">{node.name}</span>
-                              </div>
-                            )}
-                          </div>
-                          <h3 className="font-medium group-hover:text-primary truncate">{node.name}</h3>
-                          <p className="text-sm text-muted-foreground">{node.products.totalCount} products</p>
-                        </Link>
-                      ))
+        <div className="col-span-9">
+          <div className="grid grid-cols-3 gap-6">
+            {loading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="aspect-video bg-muted animate-pulse rounded-lg" />
+                  <div className="h-4 w-2/3 bg-muted animate-pulse rounded" />
+                  <div className="h-3 w-1/2 bg-muted animate-pulse rounded" />
+                </div>
+              ))
+            ) : categories.length > 0 ? (
+              categories.slice(0, 6).map((category) => (
+                <Link 
+                  key={category.id} 
+                  href={`/categories/${category.slug}`}
+                  className="group block"
+                >
+                  <div className="aspect-video relative overflow-hidden rounded-lg mb-2">
+                    {category.backgroundImage?.url ? (
+                      <Image
+                        src={category.backgroundImage.url}
+                        alt={category.backgroundImage.alt || category.name}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
                     ) : (
-                      <div className="col-span-3 text-center py-10">
-                        <p className="text-muted-foreground">No subcategories available</p>
+                      <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center group-hover:bg-accent transition-colors">
+                        <span className="text-muted-foreground">{category.name}</span>
                       </div>
                     )}
                   </div>
-                </>
-              )}
-            </>
-          )}
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                    {category.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {category.products.totalCount} products
+                  </p>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-3 flex items-center justify-center py-12">
+                <p className="text-muted-foreground">No categories available</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

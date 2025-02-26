@@ -57,7 +57,7 @@ export function PriceDisplay({
             {formatPrice(price, { currency })}
           </span>
           
-          {showDiscountBadge && discount.percentage && (
+          {showDiscountBadge && discount?.percentage && (
             <span className={cn(
               "rounded-full bg-red-500 font-medium text-white",
               sizeStyles[size].badge

@@ -21,6 +21,11 @@ export const PRODUCTS_QUERY = gql`
           name
           description
           slug
+          productType {
+            id
+            name
+            kind
+          }
           thumbnail {
             url
             alt
@@ -145,6 +150,11 @@ export const PRODUCT_BY_SLUG_QUERY = gql`
       name
       description
       slug
+      productType {
+        id
+        name
+        kind
+      }
       thumbnail {
         url
         alt
@@ -318,46 +328,37 @@ export interface ProductSortInput {
 }
 
 export interface ProductFilterInput {
-  search?: string
+  isAvailable?: boolean;
+  search?: string;
   price?: {
-    gte?: number
-    lte?: number
-  }
+    gte?: number;
+    lte?: number;
+  };
+  categories?: string[];
   attributes?: Array<{
-    slug: string
-    values: string[]
-  }>
-  categories?: string[]
-  isAvailable?: boolean
+    slug: string;
+    values: string[];
+  }>;
+  [key: string]: any; // 添加索引签名
 }
 
 // Convert URL parameters to GraphQL filter conditions
 export function getProductFilters(searchParams: URLSearchParams | Record<string, string>): {
-  filter: {
-    isAvailable?: boolean
-    search?: string
-    price?: {
-      gte?: number
-      lte?: number
-    }
-    categories?: string[]
-    attributes?: Array<{
-      slug: string
-      values: string[]
-    }>
-  }
-  sortBy: {
-    field: string
-    direction: string
-  }
+  filter: ProductFilterInput;
+  sortBy: ProductSortInput;
 } {
-  // Convert searchParams to a regular object
+  // Convert searchParams to a regular object if it's URLSearchParams
   const params = searchParams instanceof URLSearchParams 
     ? Object.fromEntries(searchParams.entries()) 
     : searchParams
 
-  const filter: ProductFilterInput = {}
-  const sort = params.sort
+  const filter: ProductFilterInput = {
+    isAvailable: undefined,
+    search: undefined,
+    price: undefined,
+    categories: undefined,
+    attributes: undefined
+  }
   
   // Search keyword
   if (params.search) {
@@ -374,7 +375,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
   }
 
   // Brand filter
-  const brands = params.brands?.split(',')
+  const brands = params.brands?.split(',').filter(Boolean)
   if (brands?.length) {
     filter.attributes = [
       ...(filter.attributes || []),
@@ -383,7 +384,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
   }
 
   // Color filter
-  const colors = params.colors?.split(',')
+  const colors = params.colors?.split(',').filter(Boolean)
   if (colors?.length) {
     filter.attributes = [
       ...(filter.attributes || []),
@@ -392,7 +393,7 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
   }
 
   // Size filter
-  const sizes = params.sizes?.split(',')
+  const sizes = params.sizes?.split(',').filter(Boolean)
   if (sizes?.length) {
     filter.attributes = [
       ...(filter.attributes || []),
@@ -401,15 +402,15 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
   }
 
   // Stock status
-  const inStock = params.inStock
-  if (inStock === 'true') {
+  if (params.inStock === 'true') {
     filter.isAvailable = true
   }
 
   // Sorting
   let sortBy: ProductSortInput = { field: 'RANK', direction: 'DESC' } // Default sorting
-  if (sort) {
-    switch (sort) {
+  
+  if (params.sort) {
+    switch (params.sort) {
       case 'price_asc':
         sortBy = { field: 'PRICE', direction: 'ASC' }
         break
@@ -422,8 +423,15 @@ export function getProductFilters(searchParams: URLSearchParams | Record<string,
       case 'popular':
         sortBy = { field: 'RANK', direction: 'DESC' }
         break
+      default:
+        sortBy = { field: 'RANK', direction: 'DESC' }
     }
   }
 
-  return { filter, sortBy }
+  // Clean up undefined values
+  const cleanFilter = Object.fromEntries(
+    Object.entries(filter).filter(([_, value]) => value !== undefined)
+  ) as ProductFilterInput;
+
+  return { filter: cleanFilter, sortBy }
 } 

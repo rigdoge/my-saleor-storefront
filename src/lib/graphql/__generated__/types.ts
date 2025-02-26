@@ -33606,7 +33606,7 @@ export type ProductsQueryVariables = Exact<{
 }>;
 
 
-export type ProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, description?: any | null, slug: string, isAvailable?: boolean | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null } | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }>, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, quantityAvailable?: number | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }> }> | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type ProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, description?: any | null, slug: string, isAvailable?: boolean | null, productType: { __typename?: 'ProductType', id: string, name: string, kind: ProductTypeKindEnum }, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null } | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }>, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, quantityAvailable?: number | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }> }> | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 export type ProductByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -33622,7 +33622,7 @@ export type ProductBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProductBySlugQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null, slug: string, isAvailable?: boolean | null, seoDescription?: string | null, seoTitle?: string | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }>, metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }>, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null, discount?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string } }> } | null } | null, collections?: Array<{ __typename?: 'Collection', id: string, name: string, slug: string }> | null, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, sku?: string | null, quantityAvailable?: number | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }>, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null, discount?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null }> | null } | null };
+export type ProductBySlugQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null, slug: string, isAvailable?: boolean | null, seoDescription?: string | null, seoTitle?: string | null, productType: { __typename?: 'ProductType', id: string, name: string, kind: ProductTypeKindEnum }, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }>, metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }>, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null, discount?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string } }> } | null } | null, collections?: Array<{ __typename?: 'Collection', id: string, name: string, slug: string }> | null, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, sku?: string | null, quantityAvailable?: number | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', name?: string | null, slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null, slug?: string | null }> }>, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null, discount?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null }> | null } | null };
 
 export type GetProductsQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -34859,6 +34859,11 @@ export const ProductsDocument = `
         name
         description
         slug
+        productType {
+          id
+          name
+          kind
+        }
         thumbnail {
           url
           alt
@@ -35015,6 +35020,11 @@ export const ProductBySlugDocument = `
     name
     description
     slug
+    productType {
+      id
+      name
+      kind
+    }
     thumbnail {
       url
       alt

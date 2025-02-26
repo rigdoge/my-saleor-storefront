@@ -7,6 +7,7 @@ export interface CartItem {
   price: number
   currency: string
   stock?: number
+  isGiftCard?: boolean
   thumbnail?: {
     url: string
     alt?: string

@@ -6,6 +6,10 @@ A modern, high-performance, and customizable storefront for Saleor e-commerce pl
 
 ## Core Requirements
 
+Project: Storefront for Saleor 3.20
+code evrything in English.
+
+
 1. **SEO Optimization**
    - Server-side rendering with Next.js App Router
    - Dynamic metadata generation

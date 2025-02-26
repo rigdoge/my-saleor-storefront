@@ -8,10 +8,12 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
+    const channel = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || 'default-channel'
+    
     // Get category data
     const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
       slug: params.slug,
-      channel: 'default-channel'
+      channel
     })
 
     const category = response.category
@@ -47,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     }
   } catch (error) {
+    console.error('Error generating category metadata:', error)
     return {
       title: 'Category',
       description: 'Browse our product categories',

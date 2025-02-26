@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import { useChannel } from '@/components/providers/channel-provider'
 import { CATEGORY_BY_SLUG_QUERY, CATEGORY_BY_ID_QUERY } from '@/lib/graphql/queries/categories'
-import { PRODUCTS_QUERY, getProductFilters } from '@/lib/graphql/queries/products'
+import { PRODUCTS_QUERY, getProductFilters, ProductFilterInput, ProductSortInput } from '@/lib/graphql/queries/products'
 import { graphqlRequestClient } from '@/lib/graphql/client'
 import { CategoryPageTemplate } from '@/components/category/category-page-template'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -13,6 +13,107 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useUrlParams } from '@/lib/hooks/use-url-params'
+import Link from 'next/link'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { ErrorAlert } from '@/components/ui/error-alert'
+
+// 添加类型定义
+interface ProductNode {
+  id: string
+  name: string
+  description?: string
+  slug: string
+  productType?: {
+    id: string
+    name: string
+    kind: string
+  }
+  thumbnail?: {
+    url: string
+    alt?: string
+  }
+  pricing?: {
+    priceRange?: {
+      start?: {
+        gross?: {
+          amount: number
+          currency: string
+        }
+      }
+    }
+    discount?: {
+      gross?: {
+        amount: number
+        currency: string
+      }
+    }
+  }
+  isAvailable?: boolean
+  rating?: number
+  reviewCount?: number
+  category?: {
+    id: string
+    name: string
+    slug: string
+  }
+  variants?: Array<{
+    id: string
+    name: string
+    quantityAvailable: number
+    attributes: Array<{
+      attribute: {
+        name: string
+        slug: string
+      }
+      values: Array<{
+        name: string
+        slug: string
+      }>
+    }>
+  }>
+}
+
+interface ProductEdge {
+  node: ProductNode
+  cursor: string
+}
+
+interface ProductConnection {
+  edges: ProductEdge[]
+  pageInfo: {
+    hasNextPage: boolean
+    endCursor?: string
+  }
+  totalCount: number
+}
+
+interface CategoryData {
+  id: string
+  name: string
+  slug: string
+  parent?: {
+    id: string
+    name: string
+    slug: string
+  }
+}
+
+interface ProductsResponse {
+  products: ProductConnection
+}
+
+// 添加响应类型定义
+interface GraphQLResponse<T> {
+  data: T
+  errors?: Array<{
+    message: string
+    locations: Array<{
+      line: number
+      column: number
+    }>
+    path?: string[]
+  }>
+}
 
 function CategorySkeleton() {
   return (
@@ -73,6 +174,10 @@ export function CategoryPage({
   const { currentChannel } = useChannel()
   const [retryCount, setRetryCount] = useState(0)
   const { updateParams, getParam } = useUrlParams()
+  const channel = currentChannel?.slug || process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || 'default-channel'
+  
+  // 将 searchParams 转换为普通对象
+  const searchParamsObj = Object.fromEntries(searchParams?.entries() || [])
   
   // 获取分类信息
   const { 
@@ -81,13 +186,14 @@ export function CategoryPage({
     error: categoryError,
     refetch: refetchCategory
   } = useQuery({
-    queryKey: ['category', params.slug, retryCount],
+    queryKey: ['category', params.slug, channel, searchParams?.toString()],
     queryFn: async () => {
       try {
-        // 通过 slug 获取分类
         const response = await graphqlRequestClient(CATEGORY_BY_SLUG_QUERY, {
           slug: params.slug,
-          channel: currentChannel.slug
+          channel,
+          filter: getProductFilters(searchParamsObj),
+          sortBy: getParam('sort') || 'date_desc'
         })
         
         // 如果找到分类，返回它
@@ -122,7 +228,6 @@ export function CategoryPage({
   })
 
   // 获取筛选条件
-  const searchParamsObj = Object.fromEntries(searchParams.entries())
   const { filter, sortBy } = getProductFilters(searchParamsObj)
   if (categoryData?.id) {
     filter.categories = [categoryData.id]
@@ -137,17 +242,25 @@ export function CategoryPage({
     isFetchingNextPage,
     error: productsError,
     refetch: refetchProducts
-  } = useInfiniteQuery({
+  } = useInfiniteQuery<ProductConnection>({
     queryKey: ['products', currentChannel.slug, filter, sortBy, retryCount],
     queryFn: async ({ pageParam }) => {
       try {
         const response = await graphqlRequestClient(PRODUCTS_QUERY, {
           first: 24,
           after: pageParam,
-          channel: currentChannel.slug,
-          filter,
+          channel: currentChannel.slug || channel,
+          filter: {
+            ...filter,
+            channel: currentChannel.slug || channel
+          },
           sortBy
-        })
+        }) as { products: ProductConnection }
+
+        if (!response?.products) {
+          throw new Error('No products data received')
+        }
+
         return response.products
       } catch (err) {
         console.error('获取产品列表失败:', err)
@@ -160,50 +273,58 @@ export function CategoryPage({
     } : undefined,
     initialPageParam: null,
     getNextPageParam: (lastPage) => {
-      if (lastPage?.pageInfo?.hasNextPage) {
-        return lastPage.pageInfo.endCursor
-      }
-      return undefined
+      if (!lastPage) return undefined
+      return lastPage.pageInfo?.hasNextPage ? lastPage.pageInfo.endCursor : undefined
     },
-    enabled: !!categoryData,
+    enabled: !!categoryData?.id,
     staleTime: 2 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     retry: 2
   })
 
-  // 处理排序变更
-  const handleSortChange = (value: string) => {
-    updateParams({ sort: value, page: '1' })
-  }
-
   // 计算产品总数和价格范围
-  const products = productsData?.pages.flatMap(page => 
-    page.edges.map((edge: any) => ({
-      id: edge.node.id,
-      name: edge.node.name,
-      description: edge.node.description,
-      slug: edge.node.slug,
-      price: edge.node.pricing?.priceRange?.start?.gross?.amount || 0,
-      currency: edge.node.pricing?.priceRange?.start?.gross?.currency || 'CNY',
-      thumbnail: edge.node.thumbnail,
-      isAvailable: edge.node.isAvailable,
-      rating: edge.node.rating,
-      reviewCount: edge.node.reviewCount,
-      category: edge.node.category,
-      pricing: {
-        price: edge.node.pricing?.priceRange?.start?.gross?.amount || 0,
-        currency: edge.node.pricing?.priceRange?.start?.gross?.currency || 'CNY',
-        discount: edge.node.pricing?.discount?.gross?.amount
-          ? {
-              amount: edge.node.pricing?.discount?.gross?.amount,
-              currency: edge.node.pricing?.discount?.gross?.currency || 'CNY'
-            }
-          : undefined
-      }
-    }))
-  ) || []
+  const products = useMemo(() => {
+    if (!productsData?.pages) return []
+    
+    return productsData.pages.flatMap(page => {
+      if (!page?.edges) return []
+      
+      return page.edges.map((edge: ProductEdge) => {
+        if (!edge?.node) return null
+        
+        const node = edge.node
+        const isGiftCard = node.productType?.kind === 'GIFT_CARD'
+        
+        return {
+          id: node.id,
+          name: node.name,
+          description: node.description,
+          slug: node.slug,
+          price: node.pricing?.priceRange?.start?.gross?.amount || 0,
+          currency: node.pricing?.priceRange?.start?.gross?.currency || 'CNY',
+          thumbnail: node.thumbnail,
+          isAvailable: node.isAvailable,
+          rating: node.rating,
+          reviewCount: node.reviewCount,
+          category: node.category,
+          isGiftCard,
+          productType: node.productType,
+          pricing: {
+            price: node.pricing?.priceRange?.start?.gross?.amount || 0,
+            currency: node.pricing?.priceRange?.start?.gross?.currency || 'CNY',
+            discount: node.pricing?.discount?.gross?.amount
+              ? {
+                  amount: node.pricing?.discount?.gross?.amount,
+                  currency: node.pricing?.discount?.gross?.currency || 'CNY'
+                }
+              : undefined
+          }
+        }
+      }).filter(Boolean)
+    })
+  }, [productsData?.pages])
 
-  const totalCount = productsData?.pages[0]?.totalCount || 0
+  const totalCount = productsData?.pages?.[0]?.totalCount || 0
 
   // 构建面包屑
   const breadcrumbs = []
@@ -214,12 +335,17 @@ export function CategoryPage({
     })
   }
 
+  // 处理排序变更
+  const handleSortChange = useCallback((value: string) => {
+    updateParams({ sort: value, page: '1' })
+  }, [updateParams])
+
   // 加载更多产品
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
-  }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   if (isLoadingCategory) {
     return <CategorySkeleton />
@@ -230,16 +356,16 @@ export function CategoryPage({
       <div className="container py-10">
         <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>错误</AlertTitle>
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            我们无法找到您要查找的分类。它可能已被移除或 URL 可能不正确。
+            We couldn't find the category you're looking for. It may have been removed or the URL might be incorrect.
           </AlertDescription>
         </Alert>
         
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <h1 className="text-2xl font-bold">未找到分类</h1>
+          <h1 className="text-2xl font-bold">Category Not Found</h1>
           <p className="mt-2 text-muted-foreground">
-            无法找到分类 "{params.slug}"
+            Could not find category "{params.slug}"
           </p>
           <div className="mt-6 flex gap-4">
             <Button 
@@ -248,12 +374,38 @@ export function CategoryPage({
                 refetchCategory()
               }}
             >
-              重试
+              Try Again
             </Button>
-            <Button variant="outline" asChild>
-              <a href="/">返回首页</a>
-            </Button>
+            <Link href="/" passHref>
+              <Button variant="outline" asChild>
+                Return to Home
+              </Button>
+            </Link>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (productsError) {
+    return (
+      <div className="container py-10">
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Failed to load products. Please try again later.
+          </AlertDescription>
+        </Alert>
+        
+        <div className="flex justify-center mt-4">
+          <Button 
+            onClick={() => refetchProducts()}
+            disabled={isLoadingProducts}
+          >
+            {isLoadingProducts ? <LoadingSpinner size="sm" className="mr-2" /> : null}
+            Retry
+          </Button>
         </div>
       </div>
     )

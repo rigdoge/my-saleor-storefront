@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   title: "Saleor Store",
   description: "Modern e-commerce platform based on Saleor",
   manifest: "/manifest.json",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000'),
   icons: {
     icon: "/icons/logo.svg",
     apple: [
