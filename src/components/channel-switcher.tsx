@@ -49,7 +49,7 @@ export function ChannelSwitcher() {
                 onSelect={() => {
                   setCurrentChannel(channel)
                   setOpen(false)
-                  // 重新加载页面以应用新的 channel 设置
+                  // Reload page to apply new channel settings
                   router.refresh()
                 }}
               >

@@ -68,8 +68,8 @@ export function ChannelProvider({
         return defaultChannel
       }
     },
-    staleTime: 1000 * 60 * 5, // 5分钟内数据不会重新获取
-    gcTime: 1000 * 60 * 30, // 缓存30分钟
+    staleTime: 1000 * 60 * 5, // Data won't be refetched within 5 minutes
+    gcTime: 1000 * 60 * 30, // Cache for 30 minutes
   })
 
   if (isLoading) {
@@ -81,9 +81,9 @@ export function ChannelProvider({
   return (
     <ChannelContext.Provider
       value={{
-        currentChannel: channel,
         availableChannels: [channel],
-        setCurrentChannel: () => {} // 单channel模式下不需要切换
+        currentChannel: channel,
+        setCurrentChannel: () => {} // No need to switch channel in single-channel mode
       }}
     >
       {children}

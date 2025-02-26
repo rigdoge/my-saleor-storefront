@@ -58,9 +58,9 @@ export default function SearchPage() {
     <div className="container py-10">
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">搜索结果</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Search Results</h2>
           <p className="text-muted-foreground">
-            {searchQuery ? `"${searchQuery}" 的搜索结果` : '请输入搜索关键词'}
+            {searchQuery ? `Search results for "${searchQuery}"` : 'Please enter search keywords'}
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function SearchPage() {
             <ProductCardSkeleton />
           </div>
         ) : !searchData || searchData.length === 0 ? (
-          <div className="text-center text-muted-foreground">未找到相关商品</div>
+          <div className="text-center text-muted-foreground">No products found</div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {searchData.map((product: any) => (

@@ -25,7 +25,7 @@ export function ProductTemplate4({
 }: ProductTemplateProps) {
   if (!product) return null
 
-  // 转换GraphQL返回的attributes为ProductDetails组件期望的格式
+  // Convert GraphQL returned attributes to the format expected by ProductDetails component
   const productDetails = {
     description: product.description || '',
     attributes: product.attributes || [],
@@ -40,7 +40,7 @@ export function ProductTemplate4({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* 面包屑导航 */}
+      {/* Breadcrumb navigation */}
       <div className="mb-6 text-sm flex gap-2">
         <span>Men</span>
         <span>/</span>
@@ -50,17 +50,17 @@ export function ProductTemplate4({
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
-        {/* 左侧：产品图片区 */}
+        {/* Left: Product images */}
         <div>
           <ProductGallery media={product.media || []} />
         </div>
 
-        {/* 右侧：产品信息区 */}
+        {/* Right: Product information */}
         <div className="flex flex-col">
-          {/* 产品标题 */}
+          {/* Product title */}
           <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
           
-          {/* 价格 */}
+          {/* Price */}
           <div className="mb-6">
             <span className="text-2xl font-bold">
               {selectedVariant?.pricing?.price?.gross 
@@ -69,7 +69,7 @@ export function ProductTemplate4({
             </span>
           </div>
 
-          {/* 评分 */}
+          {/* Ratings */}
           <div className="flex items-center gap-2 mb-6">
             <div className="flex">
               {[1, 2, 3, 4, 5].map((_, i) => (
@@ -87,7 +87,7 @@ export function ProductTemplate4({
             </span>
           </div>
 
-          {/* 颜色选择 */}
+          {/* Color selection */}
           <div className="mb-6">
             <h3 className="font-medium mb-3">Color</h3>
             <div className="flex gap-2">
@@ -97,7 +97,7 @@ export function ProductTemplate4({
             </div>
           </div>
 
-          {/* 尺寸选择 */}
+          {/* Size selection */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-medium">Size</h3>
@@ -114,7 +114,7 @@ export function ProductTemplate4({
             </div>
           </div>
 
-          {/* 添加到购物车按钮 */}
+          {/* Add to bag button */}
           <Button
             className="mt-4 bg-indigo-600 hover:bg-indigo-700 h-12"
             onClick={onAddToCart}
@@ -123,14 +123,14 @@ export function ProductTemplate4({
             Add to bag
           </Button>
 
-          {/* 产品描述 */}
+          {/* Product description */}
           <div className="mt-10">
             <h2 className="text-2xl font-bold mb-4">Basic Tee 6-Pack</h2>
             <p className="text-slate-600 mb-6">
               The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.
             </p>
 
-            {/* 产品特点 */}
+            {/* Product highlights */}
             <div className="mb-6">
               <h3 className="font-bold mb-3">Highlights</h3>
               <ul className="list-disc list-inside space-y-1 text-slate-600">
@@ -141,7 +141,7 @@ export function ProductTemplate4({
               </ul>
             </div>
 
-            {/* 产品详情 */}
+            {/* Product details */}
             <div className="mb-6">
               <h3 className="font-bold mb-3">Details</h3>
               <p className="text-slate-600">

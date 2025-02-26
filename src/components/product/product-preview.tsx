@@ -63,7 +63,7 @@ export function ProductPreview({ product, open, onOpenChange }: ProductPreviewPr
                       })}
                     </div>
                     <span className="text-sm text-muted-foreground">
-                      ({product.reviewCount} 条评价)
+                      ({product.reviewCount} reviews)
                     </span>
                   </div>
                 )}
@@ -77,7 +77,7 @@ export function ProductPreview({ product, open, onOpenChange }: ProductPreviewPr
                   showDiscountBadge={true}
                 />
                 {!product.isAvailable && (
-                  <span className="text-sm text-red-500">暂时缺货</span>
+                  <span className="text-sm text-red-500">Out of Stock</span>
                 )}
               </div>
               <p className="text-sm text-muted-foreground">{product.description}</p>
@@ -99,7 +99,7 @@ export function ProductPreview({ product, open, onOpenChange }: ProductPreviewPr
                 disabled={!product.isAvailable || isAddingToCart}
               >
                 <ShoppingBag className="mr-2 h-4 w-4" />
-                {isAddingToCart ? '添加中...' : '加入购物车'}
+                {isAddingToCart ? 'Adding...' : 'Add to Cart'}
               </Button>
               <Button
                 variant="outline"
@@ -124,7 +124,7 @@ export function ProductPreview({ product, open, onOpenChange }: ProductPreviewPr
                 href={`/products/${product.slug}`}
                 className="text-sm text-muted-foreground hover:text-primary"
               >
-                查看详情 →
+                View Details →
               </Link>
             </div>
           </div>

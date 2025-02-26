@@ -42,10 +42,10 @@ export function LoadMore({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            加载中...
+            Loading...
           </>
         ) : (
-          '加载更多'
+          'Load More'
         )}
       </Button>
     </div>

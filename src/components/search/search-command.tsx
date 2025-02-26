@@ -61,21 +61,21 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput
-        placeholder="搜索商品..."
+        placeholder="Search products..."
         value={search}
         onValueChange={setSearch}
       />
       <CommandList>
-        <CommandEmpty>未找到相关商品</CommandEmpty>
+        <CommandEmpty>No products found</CommandEmpty>
         {isLoading ? (
           <div className="py-6 text-center text-sm">
             <Loader2 className="mx-auto h-4 w-4 animate-spin" />
             <span className="mt-2 block text-muted-foreground">
-              正在搜索...
+              Searching...
             </span>
           </div>
         ) : suggestions?.products?.edges?.length ? (
-          <CommandGroup heading="商品">
+          <CommandGroup heading="Products">
             {suggestions.products.edges.map(({ node: product }: { node: any }) => (
               <CommandItem
                 key={product.id}
@@ -108,13 +108,13 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
           </CommandGroup>
         ) : null}
         {debouncedSearch && (
-          <CommandGroup heading="操作">
+          <CommandGroup heading="Actions">
             <CommandItem
               value={`/search?q=${encodeURIComponent(debouncedSearch)}`}
               onSelect={handleSelect}
             >
               <Search className="mr-2 h-4 w-4" />
-              查看全部结果
+              View all results
             </CommandItem>
           </CommandGroup>
         )}

@@ -1,7 +1,7 @@
 {
-  "name": "Saleor商城",
-  "short_name": "商城",
-  "description": "基于Saleor的现代电商平台",
+  "name": "Saleor Store",
+  "short_name": "Store",
+  "description": "Modern e-commerce platform based on Saleor",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

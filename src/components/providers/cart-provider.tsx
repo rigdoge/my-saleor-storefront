@@ -13,7 +13,7 @@ const defaultCart: Cart = {
   items: [],
   totalQuantity: 0,
   totalAmount: 0,
-  currency: 'CNY'
+  currency: 'USD'
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -22,13 +22,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   })
   const [isOpen, setIsOpen] = useState(false)
 
-  // 添加商品到购物车
+  // Add item to cart
   const addItem = useCallback((item: CartItem) => {
-    // 检查库存
+    // Check stock
     if (item.stock !== undefined && item.quantity > item.stock) {
       toast({
-        title: "库存不足",
-        description: `该商品当前库存仅剩 ${item.stock} 件`,
+        title: "Insufficient Stock",
+        description: `This product only has ${item.stock} items in stock`,
         variant: "destructive"
       })
       return false
@@ -39,37 +39,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       let newItems: CartItem[]
       if (existingItemIndex > -1) {
-        // 如果商品已存在，检查更新后的数量是否超过库存
+        // If item already exists, check if updated quantity exceeds stock
         const existingItem = prevCart.items[existingItemIndex]
         const newQuantity = existingItem.quantity + item.quantity
         
         if (item.stock !== undefined && newQuantity > item.stock) {
           toast({
-            title: "库存不足",
-            description: `该商品当前库存仅剩 ${item.stock} 件`,
+            title: "Insufficient Stock",
+            description: `This product only has ${item.stock} items in stock`,
             variant: "destructive"
           })
           return prevCart
         }
         
-        // 更新数量
+        // Update quantity
         newItems = prevCart.items.map((existingItem, index) => {
           if (index === existingItemIndex) {
             return {
               ...existingItem,
               quantity: newQuantity,
-              // 更新价格，以防价格变化
+              // Update price in case it has changed
               price: item.price
             }
           }
           return existingItem
         })
       } else {
-        // 如果是新商品，添加到列表
+        // If new item, add to list
         newItems = [...prevCart.items, item]
       }
 
-      // 计算新的总数和总金额
+      // Calculate new totals
       const totalQuantity = newItems.reduce((sum, item) => sum + item.quantity, 0)
       const totalAmount = newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
@@ -78,23 +78,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         items: newItems,
         totalQuantity,
         totalAmount,
-        currency: item.currency // 使用最新添加商品的货币
+        currency: item.currency // Use latest added item's currency
       }
     })
 
-    // 添加商品后自动打开购物车
+    // Automatically open cart after adding item
     setIsOpen(true)
     
-    // 添加成功
+    // Addition successful
     return true
   }, [setCart])
 
-  // 从购物车移除商品
+  // Remove item from cart
   const removeItem = useCallback((itemId: string) => {
     setCart(prevCart => {
       const newItems = prevCart.items.filter(item => item.id !== itemId)
       
-      // 重新计算总数和总金额
+      // Recalculate totals
       const totalQuantity = newItems.reduce((sum, item) => sum + item.quantity, 0)
       const totalAmount = newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
@@ -107,19 +107,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     })
   }, [setCart])
 
-  // 更新商品数量
+  // Update item quantity
   const updateQuantity = useCallback((itemId: string, quantity: number) => {
     if (quantity < 1) return
 
     setCart(prevCart => {
-      // 找到要更新的商品
+      // Find item to update
       const itemToUpdate = prevCart.items.find(item => item.id === itemId)
       
-      // 检查库存
+      // Check stock
       if (itemToUpdate && itemToUpdate.stock !== undefined && quantity > itemToUpdate.stock) {
         toast({
-          title: "库存不足",
-          description: `该商品当前库存仅剩 ${itemToUpdate.stock} 件`,
+          title: "Insufficient Stock",
+          description: `This product only has ${itemToUpdate.stock} items in stock`,
           variant: "destructive"
         })
         return prevCart
@@ -135,7 +135,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return item
       })
 
-      // 重新计算总数和总金额
+      // Recalculate totals
       const totalQuantity = newItems.reduce((sum, item) => sum + item.quantity, 0)
       const totalAmount = newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
@@ -148,12 +148,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     })
   }, [setCart])
 
-  // 清空购物车
+  // Clear cart
   const clearCart = useCallback(() => {
     setCart(defaultCart)
   }, [setCart])
 
-  // 使用useMemo优化上下文值
+  // Optimize context value with useMemo
   const contextValue = useMemo(() => ({
     cart,
     addItem,

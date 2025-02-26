@@ -2,8 +2,8 @@ import React from 'react'
 import { ProductsPage } from '@/components/product/products-page'
 
 export const metadata = {
-  title: '所有产品',
-  description: '浏览我们的所有产品',
+  title: 'All Products',
+  description: 'Browse all our products',
 }
 
 export default function Products() {

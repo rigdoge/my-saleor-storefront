@@ -8,44 +8,44 @@ import { useRef } from "react"
 const milestones = [
   {
     year: 2005,
-    title: "公司成立",
-    description: "在互联网电商蓬勃发展的浪潮中,我们成立了公司,开始了电商创业之路。",
+    title: "Company Founded",
+    description: "In the wave of booming e-commerce development, we established our company and began our entrepreneurial journey.",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=60",
   },
   {
     year: 2008,
-    title: "首个电商平台上线",
-    description: "经过三年的积累和准备,我们的第一个电商平台正式上线运营。",
+    title: "First E-commerce Platform Launched",
+    description: "After three years of accumulation and preparation, our first e-commerce platform was officially launched.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=60",
   },
   {
     year: 2012,
-    title: "移动端布局",
-    description: "紧跟移动互联网发展趋势,我们推出了移动端APP,开启全渠道运营。",
+    title: "Mobile Strategy",
+    description: "Following the trend of mobile internet development, we launched our mobile app and began omni-channel operations.",
     image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&auto=format&fit=crop&q=60",
   },
   {
     year: 2015,
-    title: "全球化扩张",
-    description: "开始布局海外市场,产品和服务覆盖多个国家和地区。",
+    title: "Global Expansion",
+    description: "Started expanding into overseas markets, with products and services covering multiple countries and regions.",
     image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=60",
   },
   {
     year: 2018,
-    title: "技术创新",
-    description: "引入人工智能和大数据技术,提供个性化购物体验。",
+    title: "Technological Innovation",
+    description: "Introduced artificial intelligence and big data technologies to provide personalized shopping experiences.",
     image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&auto=format&fit=crop&q=60",
   },
   {
     year: 2020,
-    title: "数字化转型",
-    description: "全面推进数字化转型,打造智能化电商生态系统。",
+    title: "Digital Transformation",
+    description: "Comprehensively advanced digital transformation to build an intelligent e-commerce ecosystem.",
     image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=60",
   },
   {
     year: 2023,
-    title: "可持续发展",
-    description: "践行绿色环保理念,推动电商行业可持续发展。",
+    title: "Sustainable Development",
+    description: "Practicing green and environmental concepts to promote sustainable development in the e-commerce industry.",
     image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&auto=format&fit=crop&q=60",
   },
 ]
@@ -65,7 +65,7 @@ export default function AboutPage() {
 
   return (
     <div className="container py-16 sm:py-24">
-      {/* 公司简介 */}
+      {/* Company Profile */}
       <section className="mb-16 sm:mb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -74,16 +74,16 @@ export default function AboutPage() {
           className="mx-auto max-w-2xl text-center"
         >
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-            关于我们
+            About Us
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            我们是一家专注于电子商务的科技公司，致力于为用户提供优质的购物体验。
-            通过技术创新和服务升级，我们不断探索电商领域的无限可能。
+            We are a technology company focused on e-commerce, committed to providing users with a high-quality shopping experience.
+            Through technological innovation and service upgrades, we continuously explore the unlimited possibilities in the e-commerce field.
           </p>
         </motion.div>
       </section>
 
-      {/* 发展历程 */}
+      {/* Development History */}
       <section>
         <div className="mx-auto max-w-2xl text-center mb-16">
           <motion.h2
@@ -93,7 +93,7 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
             className="text-3xl font-bold tracking-tight sm:text-4xl"
           >
-            发展历程
+            Our Journey
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -102,7 +102,7 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-4 text-muted-foreground"
           >
-            见证我们的成长与创新
+            Witness our growth and innovation
           </motion.p>
         </div>
 
@@ -212,7 +212,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 愿景和使命 */}
+      {/* Vision and Mission */}
       <section className="mt-24 sm:mt-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -222,12 +222,12 @@ export default function AboutPage() {
           className="mx-auto max-w-2xl text-center"
         >
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            愿景和使命
+            Vision and Mission
           </h2>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            我们的愿景是成为全球领先的电商科技公司，
-            通过持续创新和优质服务，为用户创造价值，
-            推动电商行业的健康发展。
+            Our vision is to become a globally leading e-commerce technology company,
+            creating value for users through continuous innovation and quality service,
+            and promoting the healthy development of the e-commerce industry.
           </p>
         </motion.div>
       </section>

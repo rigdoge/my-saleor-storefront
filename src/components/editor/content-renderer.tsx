@@ -88,7 +88,7 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
       </div>
     )
   } catch (error) {
-    // 如果解析失败，直接返回原始文本
+    // If parsing fails, return the original text
     return <p className={className}>{content}</p>
   }
 } 

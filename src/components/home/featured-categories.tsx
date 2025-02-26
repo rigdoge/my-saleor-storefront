@@ -5,28 +5,28 @@ import { cn } from "@/lib/utils"
 
 const categories = [
   {
-    name: "时尚服饰",
+    name: "Fashion",
     href: "/categories/fashion",
     image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=60",
-    description: "探索最新潮流时尚",
+    description: "Explore the latest fashion trends",
   },
   {
-    name: "家居生活",
+    name: "Home & Living",
     href: "/categories/home",
     image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&auto=format&fit=crop&q=60",
-    description: "打造温馨舒适的家",
+    description: "Create a cozy and comfortable home",
   },
   {
-    name: "数码电子",
+    name: "Electronics",
     href: "/categories/electronics",
     image: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&auto=format&fit=crop&q=60",
-    description: "体验科技新生活",
+    description: "Experience new technology lifestyle",
   },
   {
-    name: "美妆个护",
+    name: "Beauty & Personal Care",
     href: "/categories/beauty",
     image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&auto=format&fit=crop&q=60",
-    description: "绽放自然美丽",
+    description: "Radiate natural beauty",
   },
 ]
 
@@ -35,9 +35,9 @@ export function FeaturedCategories() {
     <section className="py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">热门分类</h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Popular Categories</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            浏览我们精心挑选的商品分类，找到适合您的商品
+            Browse our carefully selected product categories to find what suits you
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-8">

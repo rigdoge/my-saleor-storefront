@@ -47,7 +47,7 @@ export function ProductVariants({
   onVariantSelect,
   selectedVariant
 }: ProductVariantsProps) {
-  // 获取所有规格类型
+  // Get all attribute types
   const attributes = variants[0]?.attributes.map(attr => ({
     name: attr.attribute.name,
     slug: attr.attribute.slug,
@@ -62,7 +62,7 @@ export function ProductVariants({
     )
   })) || []
 
-  // 当前选中的规格值
+  // Currently selected attribute values
   const [selectedValues, setSelectedValues] = React.useState<Record<string, string>>(
     selectedVariant
       ? Object.fromEntries(
@@ -74,7 +74,7 @@ export function ProductVariants({
       : {}
   )
 
-  // 根据选中的规格值找到对应的variant
+  // Find matching variant based on selected values
   const findMatchingVariant = (values: Record<string, string>) => {
     return variants.find(variant =>
       variant.attributes.every(attr =>
@@ -83,7 +83,7 @@ export function ProductVariants({
     )
   }
 
-  // 检查规格值是否可选
+  // Check if attribute value is available
   const isValueAvailable = (attrSlug: string, valueSlug: string) => {
     const testValues = {
       ...selectedValues,
@@ -96,7 +96,7 @@ export function ProductVariants({
     )
   }
 
-  // 处理规格值选择
+  // Handle attribute value selection
   const handleValueSelect = (attrSlug: string, valueSlug: string) => {
     const newValues = {
       ...selectedValues,
@@ -153,13 +153,13 @@ export function ProductVariants({
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">库存</span>
+            <span className="text-sm font-medium">Stock</span>
             <span className="text-sm text-muted-foreground">
-              {selectedVariant.quantityAvailable} 件
+              {selectedVariant.quantityAvailable} items
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">价格</span>
+            <span className="text-sm font-medium">Price</span>
             <div className="flex items-center gap-2">
               {selectedVariant.pricing.discount && (
                 <span className="text-sm text-muted-foreground line-through">

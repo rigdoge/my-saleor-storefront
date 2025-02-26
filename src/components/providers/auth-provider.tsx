@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
-  // 获取当前用户信息
+  // Get current user information
   const { data: userData, isLoading, refetch: refetchUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
@@ -29,11 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     enabled: !!token,
   })
 
-  // 登录
+  // Login
   const loginMutation = useMutation({
     mutationFn: async (input: LoginInput) => {
       try {
-        // 先清除旧的 token
+        // Clear old token first
         localStorage.removeItem('authToken')
         
         const response = await graphqlRequestClient(LOGIN_MUTATION, input)
@@ -43,10 +43,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           throw new Error(response.tokenCreate.errors[0].message)
         }
         
-        // 设置新的 token
+        // Set new token
         const newToken = response.tokenCreate.token
         if (!newToken) {
-          throw new Error('登录失败：未收到有效的 token')
+          throw new Error('Login failed: No valid token received')
         }
         
         return response.tokenCreate
@@ -61,18 +61,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('authToken', newToken)
       setError(null)
       
-      // 重新获取用户信息
+      // Refresh user information
       await refetchUser()
     },
     onError: (error: Error) => {
       setError(error)
-      // 确保清除无效的 token
+      // Ensure invalid token is cleared
       setToken(null)
       localStorage.removeItem('authToken')
     },
   })
 
-  // 注册
+  // Register
   const registerMutation = useMutation({
     mutationFn: async (input: RegisterInput) => {
       try {
@@ -87,23 +87,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         })
 
-        console.log('Register response:', response) // 添加日志
+        console.log('Register response:', response) // Add log
 
         if (response.accountRegister.errors?.length) {
           const error = response.accountRegister.errors[0]
-          throw new Error(error.message || '注册失败，请稍后重试')
+          throw new Error(error.message || 'Registration failed, please try again later')
         }
         
-        // 注册成功后自动登录
+        // Automatically login after successful registration
         const loginResponse = await graphqlRequestClient(LOGIN_MUTATION, {
           email: input.email,
           password: input.password,
         })
 
-        console.log('Login response:', loginResponse) // 添加日志
+        console.log('Login response:', loginResponse) // Add log
 
         if (loginResponse.tokenCreate.errors?.length) {
-          throw new Error('注册成功但登录失败，请尝试手动登录')
+          throw new Error('Registration successful but login failed, please try to login manually')
         }
         
         return {
@@ -111,10 +111,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           token: loginResponse.tokenCreate.token,
         }
       } catch (error: any) {
-        // 处理网络错误或其他未预期的错误
+        // Handle network errors or other unexpected errors
         console.error('Registration error:', error)
         if (!error.message) {
-          error.message = '注册失败，请检查网络连接后重试'
+          error.message = 'Registration failed, please check your network connection and try again'
         }
         throw error
       }
@@ -130,13 +130,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
   })
 
-  // 登出
+  // Logout
   const logout = () => {
     setToken(null)
     localStorage.removeItem('authToken')
   }
 
-  // 初始化时从 localStorage 恢复 token
+  // Initialize from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem('authToken')
     if (storedToken) {

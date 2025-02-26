@@ -13,19 +13,19 @@ import {
 const navItems = [
   {
     href: "/",
-    label: "首页",
+    label: "Home",
   },
   {
     href: "/products",
-    label: "全部商品",
+    label: "All Products",
   },
   {
     href: "/categories",
-    label: "商品分类",
+    label: "Categories",
   },
   {
     href: "/brands",
-    label: "品牌",
+    label: "Brands",
   },
 ]
 
@@ -40,7 +40,7 @@ export function MobileNav() {
           className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
         >
           <Menu className="h-6 w-6" />
-          <span className="sr-only">切换菜单</span>
+          <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="pr-0">

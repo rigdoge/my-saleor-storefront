@@ -33,8 +33,8 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     if (!favorites.some(f => f.id === product.id)) {
       setFavorites(prev => [...prev, product])
       toast({
-        title: "已添加到收藏",
-        description: `${product.name} 已添加到您的收藏夹`,
+        title: "Added to Favorites",
+        description: `${product.name} has been added to your favorites`,
       })
     }
   }
@@ -44,8 +44,8 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     setFavorites(prev => prev.filter(f => f.id !== productId))
     if (product) {
       toast({
-        title: "已移除收藏",
-        description: `${product.name} 已从您的收藏夹中移除`,
+        title: "Removed from Favorites",
+        description: `${product.name} has been removed from your favorites`,
       })
     }
   }

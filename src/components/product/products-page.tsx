@@ -15,7 +15,7 @@ export function ProductsPage() {
   return (
     <Container>
       <div className="py-8">
-        <h1 className="mb-8 text-3xl font-bold">所有产品</h1>
+        <h1 className="mb-8 text-3xl font-bold">All Products</h1>
         
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="hidden md:block">
@@ -27,9 +27,9 @@ export function ProductsPage() {
               <LoadingProducts count={8} />
             ) : error ? (
               <EmptyState
-                title="加载失败"
-                description="无法加载产品，请稍后重试"
-                action={{ label: '刷新', onClick: () => window.location.reload() }}
+                title="Loading Failed"
+                description="Could not load products, please try again later"
+                action={{ label: 'Refresh', onClick: () => window.location.reload() }}
               />
             ) : products && products.length > 0 ? (
               <>
@@ -43,8 +43,8 @@ export function ProductsPage() {
               </>
             ) : (
               <EmptyState
-                title="没有找到产品"
-                description="暂时没有产品可显示"
+                title="No Products Found"
+                description="There are currently no products to display"
               />
             )}
           </div>

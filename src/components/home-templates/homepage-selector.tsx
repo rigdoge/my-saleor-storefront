@@ -12,10 +12,10 @@ export function HomepageSelector() {
   const { selectedHomepage, selectHomepage } = useHomepageSelection()
   const [isOpen, setIsOpen] = useState(false)
   
-  // 统一的选择处理函数
+  // Unified selection handler
   const handleSelect = (value: string) => {
     selectHomepage(value as any)
-    setIsOpen(false) // 选择后自动关闭面板
+    setIsOpen(false) // Close panel after selection
   }
   
   if (!isOpen) {
@@ -26,7 +26,7 @@ export function HomepageSelector() {
         className="fixed bottom-4 right-4 z-50 shadow-md bg-white dark:bg-slate-800"
         onClick={() => setIsOpen(true)}
       >
-        切换首页版本
+        Switch Homepage Version
       </Button>
     )
   }
@@ -45,7 +45,7 @@ export function HomepageSelector() {
         transition={{ type: 'spring', damping: 25 }}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">选择首页布局</h2>
+          <h2 className="text-2xl font-bold">Select Homepage Layout</h2>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
             <X className="h-5 w-5" />
           </Button>
@@ -53,24 +53,24 @@ export function HomepageSelector() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <HomepagePreview 
-            title="默认版本" 
-            description="简洁基础的首页布局，展示主要功能"
+            title="Default Version" 
+            description="Clean basic homepage layout showcasing main features"
             value="homepage1"
             selected={selectedHomepage === 'homepage1'}
             onChange={handleSelect}
             image="/images/homepage1.jpg"
           />
           <HomepagePreview 
-            title="产品优先" 
-            description="突出展示产品，适合重点推广某些商品"
+            title="Product Priority" 
+            description="Emphasizes product display, perfect for promotional items"
             value="homepage2"
             selected={selectedHomepage === 'homepage2'}
             onChange={handleSelect}
             image="/images/homepage2.jpg"
           />
           <HomepagePreview 
-            title="分类优先" 
-            description="重点展示分类，帮助用户快速导航"
+            title="Category Priority" 
+            description="Highlights categories, helping users navigate quickly"
             value="homepage3"
             selected={selectedHomepage === 'homepage3'}
             onChange={handleSelect}
@@ -78,7 +78,7 @@ export function HomepageSelector() {
           />
         </div>
         
-        {/* 点击预览即可选择，无需额外的确认按钮 */}
+        {/* Click preview to select, no additional confirmation button needed */}
       </motion.div>
     </motion.div>
   )
@@ -104,7 +104,7 @@ function HomepagePreview({ title, description, value, selected, onChange, image 
     >
       <div className="relative h-40 w-full bg-slate-100 dark:bg-slate-800">
         <div className="flex items-center justify-center h-full text-slate-400">
-          {title} 预览图
+          {title} Preview
         </div>
       </div>
       <div className="p-4">

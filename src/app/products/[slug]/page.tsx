@@ -15,7 +15,7 @@ import { useProductBySlugQuery } from "@/lib/graphql/__generated__/types"
 import { DynamicProductDetail } from "@/components/product-templates"
 import { ProductTemplateSkeleton } from "@/components/product-templates/product-template-skeleton"
 
-// 定义ProductAttribute接口，与ProductDetails组件中的定义保持一致
+// Define ProductAttribute interface to match with ProductDetails component
 interface ProductAttribute {
   attribute: {
     name: string
@@ -27,7 +27,7 @@ interface ProductAttribute {
   }>
 }
 
-// 转换GraphQL返回的attributes为ProductDetails组件期望的格式
+// Convert GraphQL returned attributes to the format expected by ProductDetails component
 function convertAttributes(attributes: any[]): ProductAttribute[] {
   if (!attributes) return []
   
@@ -43,7 +43,7 @@ function convertAttributes(attributes: any[]): ProductAttribute[] {
   }))
 }
 
-// 转换GraphQL返回的category为ProductDetails组件期望的格式
+// Convert GraphQL returned category to the format expected by ProductDetails component
 function convertCategory(category: any): { 
   name: string; 
   ancestors?: { edges: Array<{ node: { name: string; slug: string } }> } 
@@ -73,7 +73,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const product = data?.product
   const [selectedVariant, setSelectedVariant] = useState(product?.variants?.[0] || null)
 
-  // 如果商品只有一个规格，自动选择该规格
+  // If the product has only one variant, automatically select it
   useEffect(() => {
     if (product?.variants && product.variants.length === 1) {
       setSelectedVariant(product.variants[0])
@@ -88,10 +88,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">商品未找到</h1>
-          <p className="mt-4 text-muted-foreground">该商品可能已下架或不存在</p>
+          <h1 className="text-2xl font-bold">Product Not Found</h1>
+          <p className="mt-4 text-muted-foreground">This product may be unavailable or does not exist</p>
           <Button asChild className="mt-8">
-            <Link href="/">返回首页</Link>
+            <Link href="/">Return to Home</Link>
           </Button>
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     
     setIsAddingToCart(true)
     
-    // 如果商品没有规格选项，使用默认价格
+    // If the product has no variant options, use default price
     const variant = selectedVariant || (product.variants.length === 1 ? product.variants[0] : null)
     if (!variant && product.variants.length > 1) {
       setIsAddingToCart(false)
@@ -156,7 +156,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     })
 
     toast({
-      description: "已添加到购物车",
+      description: "Added to cart",
     })
     
     setTimeout(() => setIsAddingToCart(false), 500)
@@ -171,7 +171,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setQuantity(newQuantity)
   }
 
-  // 使用动态产品详情组件替换原有的静态布局
+  // Use dynamic product detail component instead of static layout
   return (
     <DynamicProductDetail
       product={product}
