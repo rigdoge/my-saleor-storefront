@@ -2,22 +2,51 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { LoginForm } from "@/components/auth/login-form"
 import { useAuth } from "@/components/providers/auth-provider"
 import Image from "next/image"
 import { motion } from "framer-motion"
 
 export default function LoginPage() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const router = useRouter()
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   // If user is already logged in, redirect to homepage
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
+      setIsRedirecting(true)
       router.push('/')
     }
-  }, [user, router])
+  }, [user, loading, router])
+
+  // If redirecting or loading, show nothing to prevent flash of content
+  if (loading || isRedirecting) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 flex justify-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            >
+              <Image 
+                src="/icons/logo.svg" 
+                alt="Logo" 
+                width={48} 
+                height={48} 
+                className="h-12 w-12" 
+              />
+            </motion.div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {isRedirecting ? "Redirecting..." : "Loading..."}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">

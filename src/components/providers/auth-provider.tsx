@@ -1,10 +1,11 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { graphqlRequestClient } from '@/lib/graphql/client'
 import { CURRENT_USER_QUERY, LOGIN_MUTATION, REGISTER_MUTATION } from '@/lib/graphql/queries/auth'
 import type { AuthData, LoginInput, RegisterInput, User } from '@/lib/types/auth'
+import { useRouter } from 'next/navigation'
 
 interface AuthContextType extends AuthData {
   login: (input: LoginInput) => Promise<void>
@@ -17,6 +18,8 @@ const AuthContext = createContext<AuthContextType | null>(null)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null)
   const [error, setError] = useState<Error | null>(null)
+  const queryClient = useQueryClient()
+  const router = useRouter()
 
   // Get current user information
   const { data: userData, isLoading, refetch: refetchUser } = useQuery({
@@ -27,6 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return response.me as User
     },
     enabled: !!token,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0, // Don't cache the data (formerly cacheTime)
   })
 
   // Login
@@ -61,8 +66,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('authToken', newToken)
       setError(null)
       
-      // Refresh user information
+      // Refresh user information immediately
       await refetchUser()
+      
+      // Invalidate all queries to force refetch
+      queryClient.invalidateQueries()
     },
     onError: (error: Error) => {
       setError(error)
@@ -123,6 +131,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setToken(data.token)
       localStorage.setItem('authToken', data.token)
       setError(null)
+      
+      // Invalidate all queries to force refetch
+      queryClient.invalidateQueries()
     },
     onError: (error: Error) => {
       setError(error)
@@ -134,6 +145,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setToken(null)
     localStorage.removeItem('authToken')
+    
+    // Clear all cached data
+    queryClient.clear()
+    
+    // Force a router refresh to update UI
+    router.refresh()
+    
+    // Redirect to home page
+    router.push('/')
   }
 
   // Initialize from localStorage

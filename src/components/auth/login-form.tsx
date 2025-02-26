@@ -10,9 +10,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Icons } from "@/components/icons"
 import { motion } from "framer-motion"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function LoginForm() {
   const { login } = useAuth()
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -26,8 +28,14 @@ export function LoginForm() {
 
     try {
       await login({ email, password })
+      
+      // Force router refresh to update UI state
+      router.refresh()
+      
+      // Navigate to account page
+      router.push('/account')
     } catch (error) {
-      setError(error instanceof Error ? error.message : "登录失败，请重试")
+      setError(error instanceof Error ? error.message : "Login failed, please try again")
     } finally {
       setIsLoading(false)
     }
@@ -65,7 +73,7 @@ export function LoginForm() {
           transition={{ delay: 0.1 }}
         >
           <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            电子邮箱
+            Email
           </Label>
           <div className="relative">
             <Input
@@ -92,13 +100,13 @@ export function LoginForm() {
         >
           <div className="flex items-center justify-between">
             <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              密码
+              Password
             </Label>
             <a 
               href="/forgot-password" 
               className="text-xs font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
             >
-              忘记密码?
+              Forgot Password?
             </a>
           </div>
           <div className="relative">
@@ -144,7 +152,7 @@ export function LoginForm() {
             htmlFor="remember" 
             className="text-sm text-slate-600 dark:text-slate-400"
           >
-            记住我
+            Remember me
           </Label>
         </motion.div>
 
@@ -162,10 +170,10 @@ export function LoginForm() {
             {isLoading ? (
               <>
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                登录中...
+                Logging in...
               </>
             ) : (
-              "登录"
+              "Log in"
             )}
           </Button>
         </motion.div>
@@ -182,7 +190,7 @@ export function LoginForm() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-              或者使用
+              Or use
             </span>
           </div>
         </motion.div>

@@ -1,5 +1,19 @@
 # 更新日志
 
+## 0.2.4 (2023-03-10)
+
+### 改进
+- 优化了登录和登出功能，确保状态变更立即反映在UI上
+- 修复了登录后需要刷新页面才能显示登录状态的问题
+- 修复了登出后需要刷新页面才能显示登出状态的问题
+- 更新了TanStack Query配置，将`cacheTime`替换为`gcTime`以适配最新版本
+
+### 技术优化
+- 在`auth-provider.tsx`中添加了`useQueryClient`以管理查询失效
+- 在登录成功后添加了`queryClient.invalidateQueries()`以强制刷新数据
+- 在登出函数中添加了`queryClient.clear()`以清除所有缓存数据
+- 优化了登录表单组件，添加了`router.refresh()`以确保UI立即更新
+
 ## 0.2.2 (2023-02-25)
 
 ### 新功能
