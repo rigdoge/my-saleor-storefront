@@ -33276,6 +33276,216 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']['output']>;
 };
 
+/**
+ * A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
+ *
+ * In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
+ */
+export type __Directive = {
+  __typename?: '__Directive';
+  name: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  isRepeatable: Scalars['Boolean']['output'];
+  locations: Array<__DirectiveLocation>;
+  args: Array<__InputValue>;
+};
+
+
+/**
+ * A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
+ *
+ * In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
+ */
+export type __DirectiveArgsArgs = {
+  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies. */
+export enum __DirectiveLocation {
+  /** Location adjacent to a query operation. */
+  Query = 'QUERY',
+  /** Location adjacent to a mutation operation. */
+  Mutation = 'MUTATION',
+  /** Location adjacent to a subscription operation. */
+  Subscription = 'SUBSCRIPTION',
+  /** Location adjacent to a field. */
+  Field = 'FIELD',
+  /** Location adjacent to a fragment definition. */
+  FragmentDefinition = 'FRAGMENT_DEFINITION',
+  /** Location adjacent to a fragment spread. */
+  FragmentSpread = 'FRAGMENT_SPREAD',
+  /** Location adjacent to an inline fragment. */
+  InlineFragment = 'INLINE_FRAGMENT',
+  /** Location adjacent to a variable definition. */
+  VariableDefinition = 'VARIABLE_DEFINITION',
+  /** Location adjacent to a schema definition. */
+  Schema = 'SCHEMA',
+  /** Location adjacent to a scalar definition. */
+  Scalar = 'SCALAR',
+  /** Location adjacent to an object type definition. */
+  Object = 'OBJECT',
+  /** Location adjacent to a field definition. */
+  FieldDefinition = 'FIELD_DEFINITION',
+  /** Location adjacent to an argument definition. */
+  ArgumentDefinition = 'ARGUMENT_DEFINITION',
+  /** Location adjacent to an interface definition. */
+  Interface = 'INTERFACE',
+  /** Location adjacent to a union definition. */
+  Union = 'UNION',
+  /** Location adjacent to an enum definition. */
+  Enum = 'ENUM',
+  /** Location adjacent to an enum value definition. */
+  EnumValue = 'ENUM_VALUE',
+  /** Location adjacent to an input object type definition. */
+  InputObject = 'INPUT_OBJECT',
+  /** Location adjacent to an input object field definition. */
+  InputFieldDefinition = 'INPUT_FIELD_DEFINITION'
+}
+
+/** One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string. */
+export type __EnumValue = {
+  __typename?: '__EnumValue';
+  name: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  isDeprecated: Scalars['Boolean']['output'];
+  deprecationReason?: Maybe<Scalars['String']['output']>;
+};
+
+/** Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type. */
+export type __Field = {
+  __typename?: '__Field';
+  name: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  args: Array<__InputValue>;
+  type: __Type;
+  isDeprecated: Scalars['Boolean']['output'];
+  deprecationReason?: Maybe<Scalars['String']['output']>;
+};
+
+
+/** Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type. */
+export type __FieldArgsArgs = {
+  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value. */
+export type __InputValue = {
+  __typename?: '__InputValue';
+  name: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  type: __Type;
+  /** A GraphQL-formatted string representing the default value for this input value. */
+  defaultValue?: Maybe<Scalars['String']['output']>;
+  isDeprecated: Scalars['Boolean']['output'];
+  deprecationReason?: Maybe<Scalars['String']['output']>;
+};
+
+/** A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations. */
+export type __Schema = {
+  __typename?: '__Schema';
+  description?: Maybe<Scalars['String']['output']>;
+  /** A list of all types supported by this server. */
+  types: Array<__Type>;
+  /** The type that query operations will be rooted at. */
+  queryType: __Type;
+  /** If this server supports mutation, the type that mutation operations will be rooted at. */
+  mutationType?: Maybe<__Type>;
+  /** If this server support subscription, the type that subscription operations will be rooted at. */
+  subscriptionType?: Maybe<__Type>;
+  /** A list of all directives supported by this server. */
+  directives: Array<__Directive>;
+};
+
+/**
+ * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+ *
+ * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+ */
+export type __Type = {
+  __typename?: '__Type';
+  kind: __TypeKind;
+  name?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  specifiedByURL?: Maybe<Scalars['String']['output']>;
+  fields?: Maybe<Array<__Field>>;
+  interfaces?: Maybe<Array<__Type>>;
+  possibleTypes?: Maybe<Array<__Type>>;
+  enumValues?: Maybe<Array<__EnumValue>>;
+  inputFields?: Maybe<Array<__InputValue>>;
+  ofType?: Maybe<__Type>;
+  isOneOf?: Maybe<Scalars['Boolean']['output']>;
+};
+
+
+/**
+ * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+ *
+ * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+ */
+export type __TypeFieldsArgs = {
+  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+/**
+ * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+ *
+ * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+ */
+export type __TypeEnumValuesArgs = {
+  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+/**
+ * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+ *
+ * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+ */
+export type __TypeInputFieldsArgs = {
+  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** An enum describing what kind of type a given `__Type` is. */
+export enum __TypeKind {
+  /** Indicates this type is a scalar. */
+  Scalar = 'SCALAR',
+  /** Indicates this type is an object. `fields` and `interfaces` are valid fields. */
+  Object = 'OBJECT',
+  /** Indicates this type is an interface. `fields`, `interfaces`, and `possibleTypes` are valid fields. */
+  Interface = 'INTERFACE',
+  /** Indicates this type is a union. `possibleTypes` is a valid field. */
+  Union = 'UNION',
+  /** Indicates this type is an enum. `enumValues` is a valid field. */
+  Enum = 'ENUM',
+  /** Indicates this type is an input object. `inputFields` is a valid field. */
+  InputObject = 'INPUT_OBJECT',
+  /** Indicates this type is a list. `ofType` is a valid field. */
+  List = 'LIST',
+  /** Indicates this type is a non-null. `ofType` is a valid field. */
+  NonNull = 'NON_NULL'
+}
+
+export type IntrospectionQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IntrospectionQueryQuery = { __typename?: 'Query', __schema: { __typename?: '__Schema', types: Array<{ __typename?: '__Type', name?: string | null, kind: __TypeKind, description?: string | null, fields?: Array<{ __typename?: '__Field', name: string, description?: string | null, args: Array<{ __typename?: '__InputValue', name: string, description?: string | null, defaultValue?: string | null, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind } }>, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } | null } }> | null }> } };
+
+export type CollectionTypeQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CollectionTypeQueryQuery = { __typename?: 'Query', __type?: { __typename?: '__Type', name?: string | null, kind: __TypeKind, description?: string | null, fields?: Array<{ __typename?: '__Field', name: string, description?: string | null, args: Array<{ __typename?: '__InputValue', name: string, description?: string | null, defaultValue?: string | null, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } }>, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } }> | null } | null };
+
+export type CategoryTypeQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CategoryTypeQueryQuery = { __typename?: 'Query', __type?: { __typename?: '__Type', name?: string | null, kind: __TypeKind, description?: string | null, fields?: Array<{ __typename?: '__Field', name: string, description?: string | null, args: Array<{ __typename?: '__InputValue', name: string, description?: string | null, defaultValue?: string | null, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } }>, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } }> | null } | null };
+
+export type MenuTypeQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MenuTypeQueryQuery = { __typename?: 'Query', __type?: { __typename?: '__Type', name?: string | null, kind: __TypeKind, description?: string | null, fields?: Array<{ __typename?: '__Field', name: string, description?: string | null, args: Array<{ __typename?: '__InputValue', name: string, description?: string | null, defaultValue?: string | null, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } }>, type: { __typename?: '__Type', name?: string | null, kind: __TypeKind, ofType?: { __typename?: '__Type', name?: string | null, kind: __TypeKind } | null } }> | null } | null };
+
 export type ProductsExampleQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
@@ -33351,6 +33561,28 @@ export type UpdateUserMetadataMutationVariables = Exact<{
 
 export type UpdateUserMetadataMutation = { __typename?: 'Mutation', updateMetadata?: { __typename?: 'UpdateMetadata', item?: { __typename?: 'Address' } | { __typename?: 'App' } | { __typename?: 'Attribute' } | { __typename?: 'Category' } | { __typename?: 'Channel' } | { __typename?: 'Checkout' } | { __typename?: 'CheckoutLine' } | { __typename?: 'Collection' } | { __typename?: 'DigitalContent' } | { __typename?: 'Fulfillment' } | { __typename?: 'GiftCard' } | { __typename?: 'Invoice' } | { __typename?: 'Menu' } | { __typename?: 'MenuItem' } | { __typename?: 'Order' } | { __typename?: 'OrderLine' } | { __typename?: 'Page' } | { __typename?: 'PageType' } | { __typename?: 'Payment' } | { __typename?: 'Product' } | { __typename?: 'ProductMedia' } | { __typename?: 'ProductType' } | { __typename?: 'ProductVariant' } | { __typename?: 'Promotion' } | { __typename?: 'Sale' } | { __typename?: 'ShippingMethod' } | { __typename?: 'ShippingMethodType' } | { __typename?: 'ShippingZone' } | { __typename?: 'Shop' } | { __typename?: 'TaxClass' } | { __typename?: 'TaxConfiguration' } | { __typename?: 'TransactionItem' } | { __typename?: 'User', id: string, metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Voucher' } | { __typename?: 'Warehouse' } | null, errors: Array<{ __typename?: 'MetadataError', field?: string | null, message?: string | null }> } | null };
 
+export type MenusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MenusQuery = { __typename?: 'Query', menus?: { __typename?: 'MenuCountableConnection', edges: Array<{ __typename?: 'MenuCountableEdge', node: { __typename?: 'Menu', id: string, name: string, slug: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null }> | null }> | null }> | null } }> } | null };
+
+export type MenuBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+}>;
+
+
+export type MenuBySlugQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, name: string, slug: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, description?: any | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string, content?: any | null } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, description?: any | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null }> | null }> | null }> | null } | null };
+
+export type MainMenuQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, name: string, slug: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, description?: any | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, description?: any | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null }> | null }> | null }> | null } | null };
+
+export type NavbarMenuQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NavbarMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, name: string, slug: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, description?: any | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string, description?: any | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, name: string, slug: string } | null, page?: { __typename?: 'Page', id: string, title: string, slug: string } | null }> | null }> | null }> | null } | null };
+
 export type UserOrdersQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
@@ -33404,6 +33636,212 @@ export type GetProductsQueryVariables = Exact<{
 export type GetProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, description?: any | null, slug: string, isAvailable?: boolean | null, price?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null, discount?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null } | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, category?: { __typename?: 'Category', id: string, name: string, slug: string } | null, metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
+
+export const IntrospectionQueryDocument = `
+    query IntrospectionQuery {
+  __schema {
+    types {
+      name
+      kind
+      description
+      fields(includeDeprecated: true) {
+        name
+        description
+        args {
+          name
+          description
+          type {
+            name
+            kind
+          }
+          defaultValue
+        }
+        type {
+          name
+          kind
+          ofType {
+            name
+            kind
+            ofType {
+              name
+              kind
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useIntrospectionQueryQuery = <
+      TData = IntrospectionQueryQuery,
+      TError = unknown
+    >(
+      variables?: IntrospectionQueryQueryVariables,
+      options?: Omit<UseQueryOptions<IntrospectionQueryQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<IntrospectionQueryQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<IntrospectionQueryQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['IntrospectionQuery'] : ['IntrospectionQuery', variables],
+    queryFn: autoGraphqlClient<IntrospectionQueryQuery, IntrospectionQueryQueryVariables>(IntrospectionQueryDocument, variables),
+    ...options
+  }
+    )};
+
+export const CollectionTypeQueryDocument = `
+    query CollectionTypeQuery {
+  __type(name: "Collection") {
+    name
+    kind
+    description
+    fields {
+      name
+      description
+      args {
+        name
+        description
+        type {
+          name
+          kind
+          ofType {
+            name
+            kind
+          }
+        }
+        defaultValue
+      }
+      type {
+        name
+        kind
+        ofType {
+          name
+          kind
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useCollectionTypeQueryQuery = <
+      TData = CollectionTypeQueryQuery,
+      TError = unknown
+    >(
+      variables?: CollectionTypeQueryQueryVariables,
+      options?: Omit<UseQueryOptions<CollectionTypeQueryQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<CollectionTypeQueryQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<CollectionTypeQueryQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['CollectionTypeQuery'] : ['CollectionTypeQuery', variables],
+    queryFn: autoGraphqlClient<CollectionTypeQueryQuery, CollectionTypeQueryQueryVariables>(CollectionTypeQueryDocument, variables),
+    ...options
+  }
+    )};
+
+export const CategoryTypeQueryDocument = `
+    query CategoryTypeQuery {
+  __type(name: "Category") {
+    name
+    kind
+    description
+    fields {
+      name
+      description
+      args {
+        name
+        description
+        type {
+          name
+          kind
+          ofType {
+            name
+            kind
+          }
+        }
+        defaultValue
+      }
+      type {
+        name
+        kind
+        ofType {
+          name
+          kind
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useCategoryTypeQueryQuery = <
+      TData = CategoryTypeQueryQuery,
+      TError = unknown
+    >(
+      variables?: CategoryTypeQueryQueryVariables,
+      options?: Omit<UseQueryOptions<CategoryTypeQueryQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<CategoryTypeQueryQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<CategoryTypeQueryQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['CategoryTypeQuery'] : ['CategoryTypeQuery', variables],
+    queryFn: autoGraphqlClient<CategoryTypeQueryQuery, CategoryTypeQueryQueryVariables>(CategoryTypeQueryDocument, variables),
+    ...options
+  }
+    )};
+
+export const MenuTypeQueryDocument = `
+    query MenuTypeQuery {
+  __type(name: "Menu") {
+    name
+    kind
+    description
+    fields {
+      name
+      description
+      args {
+        name
+        description
+        type {
+          name
+          kind
+          ofType {
+            name
+            kind
+          }
+        }
+        defaultValue
+      }
+      type {
+        name
+        kind
+        ofType {
+          name
+          kind
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useMenuTypeQueryQuery = <
+      TData = MenuTypeQueryQuery,
+      TError = unknown
+    >(
+      variables?: MenuTypeQueryQueryVariables,
+      options?: Omit<UseQueryOptions<MenuTypeQueryQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MenuTypeQueryQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MenuTypeQueryQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['MenuTypeQuery'] : ['MenuTypeQuery', variables],
+    queryFn: autoGraphqlClient<MenuTypeQueryQuery, MenuTypeQueryQueryVariables>(MenuTypeQueryDocument, variables),
+    ...options
+  }
+    )};
 
 export const ProductsExampleDocument = `
     query ProductsExample($first: Int!, $after: String, $channel: String!, $filter: ProductFilterInput, $sortBy: ProductOrder) {
@@ -33804,6 +34242,417 @@ export const useUpdateUserMetadataMutation = <
       {
     mutationKey: ['UpdateUserMetadata'],
     mutationFn: (variables?: UpdateUserMetadataMutationVariables) => autoGraphqlClient<UpdateUserMetadataMutation, UpdateUserMetadataMutationVariables>(UpdateUserMetadataDocument, variables)(),
+    ...options
+  }
+    )};
+
+export const MenusDocument = `
+    query Menus {
+  menus(first: 10) {
+    edges {
+      node {
+        id
+        name
+        slug
+        items {
+          id
+          name
+          url
+          category {
+            id
+            name
+            slug
+            backgroundImage {
+              url
+              alt
+            }
+          }
+          collection {
+            id
+            name
+            slug
+            backgroundImage {
+              url
+              alt
+            }
+          }
+          page {
+            id
+            title
+            slug
+          }
+          children {
+            id
+            name
+            url
+            category {
+              id
+              name
+              slug
+            }
+            collection {
+              id
+              name
+              slug
+            }
+            page {
+              id
+              title
+              slug
+            }
+            children {
+              id
+              name
+              url
+              category {
+                id
+                name
+                slug
+              }
+              collection {
+                id
+                name
+                slug
+              }
+              page {
+                id
+                title
+                slug
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useMenusQuery = <
+      TData = MenusQuery,
+      TError = unknown
+    >(
+      variables?: MenusQueryVariables,
+      options?: Omit<UseQueryOptions<MenusQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MenusQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MenusQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Menus'] : ['Menus', variables],
+    queryFn: autoGraphqlClient<MenusQuery, MenusQueryVariables>(MenusDocument, variables),
+    ...options
+  }
+    )};
+
+export const MenuBySlugDocument = `
+    query MenuBySlug($slug: String!) {
+  menu(slug: $slug) {
+    id
+    name
+    slug
+    items {
+      id
+      name
+      url
+      category {
+        id
+        name
+        slug
+        description
+        backgroundImage {
+          url
+          alt
+        }
+      }
+      collection {
+        id
+        name
+        slug
+        backgroundImage {
+          url
+          alt
+        }
+      }
+      page {
+        id
+        title
+        slug
+        content
+      }
+      children {
+        id
+        name
+        url
+        category {
+          id
+          name
+          slug
+          description
+          backgroundImage {
+            url
+            alt
+          }
+        }
+        collection {
+          id
+          name
+          slug
+          backgroundImage {
+            url
+            alt
+          }
+        }
+        page {
+          id
+          title
+          slug
+        }
+        children {
+          id
+          name
+          url
+          category {
+            id
+            name
+            slug
+          }
+          collection {
+            id
+            name
+            slug
+          }
+          page {
+            id
+            title
+            slug
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useMenuBySlugQuery = <
+      TData = MenuBySlugQuery,
+      TError = unknown
+    >(
+      variables: MenuBySlugQueryVariables,
+      options?: Omit<UseQueryOptions<MenuBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MenuBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MenuBySlugQuery, TError, TData>(
+      {
+    queryKey: ['MenuBySlug', variables],
+    queryFn: autoGraphqlClient<MenuBySlugQuery, MenuBySlugQueryVariables>(MenuBySlugDocument, variables),
+    ...options
+  }
+    )};
+
+export const MainMenuDocument = `
+    query MainMenu {
+  menu(slug: "main-menu") {
+    id
+    name
+    slug
+    items {
+      id
+      name
+      url
+      category {
+        id
+        name
+        slug
+        description
+        backgroundImage {
+          url
+          alt
+        }
+      }
+      collection {
+        id
+        name
+        slug
+        backgroundImage {
+          url
+          alt
+        }
+      }
+      page {
+        id
+        title
+        slug
+      }
+      children {
+        id
+        name
+        url
+        category {
+          id
+          name
+          slug
+          description
+          backgroundImage {
+            url
+            alt
+          }
+        }
+        collection {
+          id
+          name
+          slug
+          backgroundImage {
+            url
+            alt
+          }
+        }
+        page {
+          id
+          title
+          slug
+        }
+        children {
+          id
+          name
+          url
+          category {
+            id
+            name
+            slug
+          }
+          collection {
+            id
+            name
+            slug
+          }
+          page {
+            id
+            title
+            slug
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useMainMenuQuery = <
+      TData = MainMenuQuery,
+      TError = unknown
+    >(
+      variables?: MainMenuQueryVariables,
+      options?: Omit<UseQueryOptions<MainMenuQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MainMenuQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MainMenuQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['MainMenu'] : ['MainMenu', variables],
+    queryFn: autoGraphqlClient<MainMenuQuery, MainMenuQueryVariables>(MainMenuDocument, variables),
+    ...options
+  }
+    )};
+
+export const NavbarMenuDocument = `
+    query NavbarMenu {
+  menu(slug: "navbar") {
+    id
+    name
+    slug
+    items {
+      id
+      name
+      url
+      category {
+        id
+        name
+        slug
+        description
+        backgroundImage {
+          url
+          alt
+        }
+      }
+      collection {
+        id
+        name
+        slug
+        backgroundImage {
+          url
+          alt
+        }
+      }
+      page {
+        id
+        title
+        slug
+      }
+      children {
+        id
+        name
+        url
+        category {
+          id
+          name
+          slug
+          description
+          backgroundImage {
+            url
+            alt
+          }
+        }
+        collection {
+          id
+          name
+          slug
+          backgroundImage {
+            url
+            alt
+          }
+        }
+        page {
+          id
+          title
+          slug
+        }
+        children {
+          id
+          name
+          url
+          category {
+            id
+            name
+            slug
+          }
+          collection {
+            id
+            name
+            slug
+          }
+          page {
+            id
+            title
+            slug
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useNavbarMenuQuery = <
+      TData = NavbarMenuQuery,
+      TError = unknown
+    >(
+      variables?: NavbarMenuQueryVariables,
+      options?: Omit<UseQueryOptions<NavbarMenuQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<NavbarMenuQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<NavbarMenuQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['NavbarMenu'] : ['NavbarMenu', variables],
+    queryFn: autoGraphqlClient<NavbarMenuQuery, NavbarMenuQueryVariables>(NavbarMenuDocument, variables),
     ...options
   }
     )};

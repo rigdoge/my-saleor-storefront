@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
+import { ApiNavigation } from "@/components/layout/api-navigation"
 
 export function Header() {
   const { user, logout } = useAuth()
@@ -33,24 +34,7 @@ export function Header() {
               </span>
             </Link>
             <nav className="hidden gap-6 md:flex">
-              <Link
-                href="/categories"
-                className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Categories
-              </Link>
-              <Link
-                href="/products"
-                className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Products
-              </Link>
-              <Link
-                href="/about"
-                className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                About
-              </Link>
+              <ApiNavigation menuSlug="navbar" className="flex items-center" />
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
