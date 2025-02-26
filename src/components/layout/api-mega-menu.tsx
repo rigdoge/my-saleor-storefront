@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronDown, Grid, Layers, Layout, ShoppingBag, FileText, Globe } from 'lucide-react';
-import { MAIN_MENU_QUERY, MENU_BY_SLUG_QUERY } from '@/lib/graphql/queries/menus';
+import { ChevronDown, Grid, Layers, Layout, ShoppingBag, FileText, Globe, X } from 'lucide-react';
+import { MAIN_MENU_QUERY, MENU_BY_SLUG_QUERY, NAVBAR_MENU_QUERY } from '@/lib/graphql/queries/menus';
 import { request } from 'graphql-request';
 import { cn } from '@/lib/utils';
 import {
@@ -23,6 +23,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 // Define types for menu data
 type MenuItem = {
@@ -76,15 +77,24 @@ type MenuResponse = {
 
 type ApiMegaMenuProps = {
   menuSlug?: string;
-  style?: 'modern' | 'grid' | 'sidebar';
+  style?: 'modern' | 'grid' | 'sidebar' | 'fullpage';
+  isOpen?: boolean;
+  onClose?: () => void;
 };
 
-export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMenuProps) {
+export function ApiMegaMenu({ 
+  menuSlug = 'navbar', 
+  style = 'modern', 
+  isOpen = false,
+  onClose 
+}: ApiMegaMenuProps) {
   const [menu, setMenu] = useState<Menu | null>(null);
-  const [activeStyle, setActiveStyle] = useState<'modern' | 'grid' | 'sidebar'>(style);
+  const [activeStyle, setActiveStyle] = useState<'modern' | 'grid' | 'sidebar' | 'fullpage'>(style);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(isOpen);
+  const [selectedCategory, setSelectedCategory] = useState<MenuItem | null>(null);
 
   // 提取fetchMenu函数到组件顶层
   const fetchMenu = async () => {
@@ -94,8 +104,21 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
       setDebugInfo(null);
       
       const endpoint = process.env.NEXT_PUBLIC_API_URI || 'https://api.example.com/graphql/';
-      const query = menuSlug === 'main-menu' ? MAIN_MENU_QUERY : MENU_BY_SLUG_QUERY;
-      const variables = menuSlug !== 'main-menu' ? { slug: menuSlug } : undefined;
+      
+      // 根据menuSlug选择适当的查询
+      let query;
+      let variables;
+      
+      if (menuSlug === 'navbar') {
+        query = NAVBAR_MENU_QUERY;
+        variables = undefined;
+      } else if (menuSlug === 'main-menu') {
+        query = MAIN_MENU_QUERY;
+        variables = undefined;
+      } else {
+        query = MENU_BY_SLUG_QUERY;
+        variables = { slug: menuSlug };
+      }
       
       console.log('Fetching menu data from:', endpoint);
       console.log('Using menu slug:', menuSlug);
@@ -167,6 +190,15 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
     fetchMenu();
   }, [menuSlug]);
 
+  useEffect(() => {
+    setIsMenuOpen(isOpen);
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setIsMenuOpen(false);
+    if (onClose) onClose();
+  };
+
   // Helper to get the link URL based on the menu item type
   const getItemUrl = (item: MenuItem): string => {
     if (item.url) return item.url;
@@ -193,6 +225,24 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
     return null;
   };
 
+  // 获取默认图片 - 如果没有设置图片则使用占位图
+  const getDefaultImage = (item: MenuItem): string => {
+    const image = getItemImage(item);
+    if (image?.url) return image.url;
+    
+    // 基于项目类型返回占位图
+    if (item.category) {
+      return `https://via.placeholder.com/800x600?text=${encodeURIComponent(item.name || 'Category')}`;
+    }
+    if (item.collection) {
+      return `https://via.placeholder.com/800x600?text=${encodeURIComponent(item.name || 'Collection')}`;
+    }
+    if (item.page) {
+      return `https://via.placeholder.com/800x600?text=${encodeURIComponent(item.name || 'Page')}`;
+    }
+    return `https://via.placeholder.com/800x600?text=${encodeURIComponent(item.name || 'Menu Item')}`;
+  };
+
   // Helper to get icon based on item type
   const getItemIcon = (item: MenuItem) => {
     if (item.category) return <ShoppingBag className="w-4 h-4 mr-2" />;
@@ -207,6 +257,12 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
     if (item.collection?.products) return item.collection.products.totalCount;
     return 0;
   };
+  
+  // 获取类别描述
+  const getItemDescription = (item: MenuItem): string => {
+    if (item.category?.description) return item.category.description;
+    return '';
+  };
 
   // Style Switcher Component
   const StyleSwitcher = () => (
@@ -217,6 +273,7 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
           {activeStyle === 'modern' && <Layout className="w-4 h-4 mr-2" />}
           {activeStyle === 'grid' && <Grid className="w-4 h-4 mr-2" />}
           {activeStyle === 'sidebar' && <Layers className="w-4 h-4 mr-2" />}
+          {activeStyle === 'fullpage' && <Layout className="w-4 h-4 mr-2" />}
           {activeStyle.charAt(0).toUpperCase() + activeStyle.slice(1)}
           <ChevronDown className="w-4 h-4 ml-2" />
         </DropdownMenuTrigger>
@@ -232,6 +289,10 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
           <DropdownMenuItem onClick={() => setActiveStyle('sidebar')}>
             <Layers className="w-4 h-4 mr-2" />
             Sidebar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setActiveStyle('fullpage')}>
+            <Layout className="w-4 h-4 mr-2" />
+            Full Page
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -290,6 +351,169 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
       </div>
     </div>
   );
+
+  // 全页面风格的 Mega Menu
+  const FullPageMegaMenu = () => {
+    if (!isMenuOpen) return null;
+    
+    return (
+      <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm overflow-y-auto">
+        <div className="container mx-auto py-8">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold">{menu?.name || 'Menu'}</h2>
+            <Button variant="ghost" size="icon" onClick={handleClose}>
+              <X className="h-6 w-6" />
+              <span className="sr-only">Close</span>
+            </Button>
+          </div>
+          
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => (
+                <div key={index} className="space-y-2">
+                  <div className="aspect-[4/3] bg-muted animate-pulse rounded-lg" />
+                  <div className="h-4 bg-muted animate-pulse rounded w-2/3" />
+                  <div className="h-3 bg-muted animate-pulse rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <ErrorDisplay />
+          ) : !menu || menu.items.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">No menu items found</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={() => fetchMenu()}
+              >
+                Retry
+              </Button>
+            </div>
+          ) : selectedCategory ? (
+            // 显示选中的类别详细内容
+            <div>
+              <div className="mb-6">
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center text-primary"
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  <ChevronDown className="h-4 w-4 mr-1 rotate-90" />
+                  Back to all categories
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="lg:col-span-8">
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-6">
+                    <Image 
+                      src={getDefaultImage(selectedCategory)}
+                      alt={selectedCategory.name || "Category image"}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+                      <div className="text-white">
+                        <h1 className="text-3xl font-bold">{selectedCategory.name}</h1>
+                        {getItemDescription(selectedCategory) && (
+                          <p className="mt-2 text-white/80">{getItemDescription(selectedCategory)}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {selectedCategory.children && selectedCategory.children.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-medium mb-4">Subcategories</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {selectedCategory.children.map((subitem) => (
+                          <Link 
+                            href={getItemUrl(subitem)}
+                            key={subitem.id}
+                            className="group block"
+                          >
+                            <div className="aspect-[4/3] relative rounded-lg overflow-hidden mb-2">
+                              <Image 
+                                src={getDefaultImage(subitem)}
+                                alt={subitem.name || "Subcategory"}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="text-white font-medium">View</span>
+                              </div>
+                            </div>
+                            <h4 className="font-medium group-hover:text-primary transition-colors">{subitem.name}</h4>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="lg:col-span-4">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-medium mb-4">Quick Links</h3>
+                      <ul className="space-y-3">
+                        {menu.items.map((item) => (
+                          <li key={item.id}>
+                            <Link 
+                              href={getItemUrl(item)}
+                              className="flex items-center text-muted-foreground hover:text-primary"
+                            >
+                              {getItemIcon(item)}
+                              <span>{item.name}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // 显示所有类别
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+              {menu.items.map((item) => (
+                <div key={item.id} className="group">
+                  <div 
+                    className="aspect-[4/3] relative rounded-lg overflow-hidden mb-4 cursor-pointer"
+                    onClick={() => setSelectedCategory(item)}
+                  >
+                    <Image 
+                      src={getDefaultImage(item)}
+                      alt={item.name || "Category"}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white font-medium">Explore</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 
+                      className="font-medium group-hover:text-primary transition-colors cursor-pointer"
+                      onClick={() => setSelectedCategory(item)}
+                    >
+                      {item.name}
+                    </h3>
+                    {item.children && (
+                      <p className="text-sm text-muted-foreground">
+                        {item.children.length} subcategories
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   // Modern Style Mega Menu
   const ModernMegaMenu = () => (
@@ -707,6 +931,10 @@ export function ApiMegaMenu({ menuSlug = 'navbar', style = 'modern' }: ApiMegaMe
       )}
     </div>
   );
+
+  if (activeStyle === 'fullpage') {
+    return <FullPageMegaMenu />;
+  }
 
   return (
     <div className="py-4">

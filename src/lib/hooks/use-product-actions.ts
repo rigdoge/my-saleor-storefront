@@ -14,9 +14,9 @@ export function useProductActions(product: Product) {
   const isProductFavorite = isFavorite(product.id)
 
   // Calculate final price
-  const hasDiscount = product.pricing?.discount && product.pricing.discount.amount > 0
+  const hasDiscount = product.pricing?.discount && product.pricing?.discount?.amount > 0
   const finalPrice = hasDiscount 
-    ? product.price - product.pricing!.discount!.amount 
+    ? product.price - (product.pricing?.discount?.amount || 0)
     : product.price
 
   // Add to cart
@@ -34,14 +34,14 @@ export function useProductActions(product: Product) {
     try {
       await addItem({
         id: product.id,
-        variantId: product.variants[0]?.id,
+        variantId: product.variants?.[0]?.id,
         name: product.name,
         slug: product.slug,
         quantity: 1,
         price: finalPrice,
         currency: product.currency,
         thumbnail: product.thumbnail,
-        variant: product.variants[0],
+        variant: product.variants?.[0],
       })
 
       toast({

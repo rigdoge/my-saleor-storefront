@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link"
-import { Heart, User, LogOut, Search } from "lucide-react"
+import { Heart, User, LogOut, Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useAuth } from "@/components/providers/auth-provider"
@@ -18,10 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
 import { ApiNavigation } from "@/components/layout/api-navigation"
+import { ApiMegaMenu } from "@/components/layout/api-mega-menu"
 
 export function Header() {
   const { user, logout } = useAuth()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false)
 
   return (
     <>
@@ -38,6 +40,17 @@ export function Header() {
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
+            <div className="flex md:hidden">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="mr-2"
+                onClick={() => setIsMegaMenuOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </div>
             <div className="hidden lg:flex">
               <Button
                 variant="outline"
@@ -112,6 +125,12 @@ export function Header() {
       </header>
       <CartDrawer />
       <SearchCommand open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+      <ApiMegaMenu 
+        menuSlug="navbar" 
+        style="fullpage" 
+        isOpen={isMegaMenuOpen} 
+        onClose={() => setIsMegaMenuOpen(false)}
+      />
     </>
   )
 } 
